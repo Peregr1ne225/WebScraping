@@ -1,0 +1,11 @@
+PathError:https://www.bnn.in.th/en/p/apple/apple-mac/apple-imac
+NoItem:https://www.bnn.in.th/en/p/apple/apple-tv/apple-tv-hd
+NoItem:https://www.bnn.in.th/en/p/notebook/2-in-1-notebook/microsoft-surface-2in1
+PathError:https://www.bnn.in.th/en/p/desktop-and-all-in-one/desktop/lenovo-desktop
+PathError:https://www.bnn.in.th/en/p/computer-hardware-diy/monitor-computer-hardware-diy/lg-monitor-computer-hardware-diy
+PathError:https://www.bnn.in.th/en/p/computer-hardware-diy/printer-and-supplies/portable-printer
+NoItem:https://www.bnn.in.th/en/p/home-entertainment/speaker/turntable
+NoItem:https://www.bnn.in.th/en/p/sport-health-and-gadgets/smartwatch/smartwatch-maimo
+NoItem:https://www.bnn.in.th/en/p/sport-health-and-gadgets/smartwatch/oppo-smartwatch
+NoItem:https://www.bnn.in.th/en/p/sport-health-and-gadgets/smartwatch/ticwatch-smartwatch
+NoItem:https://www.bnn.in.th/en/p/sport-health-and-gadgets/outdoor-activities/underwater-equipment
