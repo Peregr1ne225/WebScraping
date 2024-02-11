@@ -18,6 +18,7 @@ def get_menu():
 def get_sub():
     list_link = get_menu()
     print(list_link)
+    print(len(list_link))
     start_op = time.time()
 
     for link in list_link:

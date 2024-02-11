@@ -43,6 +43,7 @@ def get_menu(soup):
 def get_path():
     soup = expand_cate()
     list_link = get_menu(soup)
+    print(len(list_link))
     start_op = time.time()
     
     for sub_link in list_link:
