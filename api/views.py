@@ -2,7 +2,7 @@ from django.shortcuts import render
 
 # Create your views here.
 from .models import *
-from .serializers import ProductSerializer
+from .serializers import *
 from rest_framework import permissions, viewsets
 
 class ProductViewset(viewsets.ModelViewSet):
@@ -16,3 +16,23 @@ class ProductViewset(viewsets.ModelViewSet):
         if ProductID:
             queryset = queryset.filter(ProductID=ProductID)
         return queryset
+    
+class BrandViewset(viewsets.ModelViewSet):
+    queryset = Brands.objects.all()
+    serializer_class = BrandSerializer
+    #permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+class CategoryViewset(viewsets.ModelViewSet):
+    queryset = Categories.objects.all()
+    serializer_class = CategorySerializer
+    #permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+class RetailerViewset(viewsets.ModelViewSet):
+    queryset = Retailers.objects.all()
+    serializer_class = RetailerSerializer
+    #permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+class LogViewset(viewsets.ModelViewSet):
+    queryset = Logs.objects.all()
+    serializer_class = LogSerializer
+    #permission_classes = [permissions.IsAuthenticatedOrReadOnly]

@@ -30,6 +30,11 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# CSRF_COOKIE_SECURE: Determines whether the CSRF cookie should only be sent over HTTPS connections.
+CSRF_COOKIE_SECURE = True
+
+# CSRF_COOKIE_HTTPONLY: Determines whether the CSRF cookie should be accessible to JavaScript.
+CSRF_COOKIE_HTTPONLY = True
 
 # Application definition
 
@@ -136,6 +141,9 @@ import os
 CELERY_BROKER_URL = os.environ.get('amqp://guest:guest@localhost')
 
 REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+    ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10
 }
