@@ -73,11 +73,3 @@ class Logs(models.Model):
     
     def __str__(self):
         return f"ProductID: {self.ProductID}, EditAttrib: {self.EditAttrib}, OldData: {self.OldData}, NewData: {self.NewData}"
-
-
-
-
-
-
-    
-
