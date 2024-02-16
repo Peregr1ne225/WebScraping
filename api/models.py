@@ -52,6 +52,7 @@ class Products(models.Model):
     RetailID = models.ForeignKey(Retailers, on_delete=models.CASCADE)
     DateEdit = models.DateTimeField(auto_now=True)
     SimilarGroup = models.IntegerField(null=True, blank=True)
+    SimilarScore = models.IntegerField(null=True, blank=True)
     DateCreate = models.DateTimeField(auto_now_add=True)
     class Meta:
         db_table = "Products"
@@ -73,11 +74,3 @@ class Logs(models.Model):
     
     def __str__(self):
         return f"ProductID: {self.ProductID}, EditAttrib: {self.EditAttrib}, OldData: {self.OldData}, NewData: {self.NewData}"
-
-
-
-
-
-
-    
-

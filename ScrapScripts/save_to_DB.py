@@ -3,6 +3,8 @@ import re
 # from celery import Celery
 # app = Celery('tasks', broker='amqp://guest:guest@localhost//')
 from api.models import *
+from django.db.models import Max
+from fuzzywuzzy import fuzz
 
 #@app.task
 def save_list(list_item):
@@ -18,8 +20,9 @@ def create_new_db(product):
     brand = save_brand(product[3])
     retail = save_retail(product[2])
     category = save_category(product[8])
+    name_clean = data_clean(product[1])
     new_product = Products.objects.create(
-        ProductName = data_clean(product[1]),
+        ProductName = name_clean,
         BrandID = brand,
         Price = product[4],
         Stock = product[5],
@@ -29,6 +32,7 @@ def create_new_db(product):
         CategoryID = category,
         RetailID = retail,
     )
+    string_matching(new_product)
     print(new_product)
     
 def save_brand(brand):
@@ -119,6 +123,29 @@ def data_clean(name):
     name.replace("  ", "")
     name.strip()
     return name
+
+def get_max_group():
+    max = Products.objects.aggregate(max_similar_group=Max('SimilarGroup'))['max_similar_group']
+    return max
+
+def string_matching(new_product):
+    max_semilar = get_max_group()
+    max_similarity = 0
+    for product in Products.objects.all():
+    # Do something with the product
+        if product.RetailID != new_product.RetailID:
+            similarity = fuzz.token_sort_ratio(new_product.ProductName, product.ProductName)
+            if similarity > 80 and max_similarity < similarity:
+                max_similarity = similarity
+                new_product.SimilarGroup = product.SimilarGroup
+                new_product.SimilarScore = similarity
+                new_product.save()
+                #break
+    if new_product.SimilarGroup is None:
+        new_product.SimilarGroup = max_semilar + 1
+        new_product.SimilarScore = 100
+        new_product.save()
+                
 
 if __name__ == '__main__':
     print("This is function module")
