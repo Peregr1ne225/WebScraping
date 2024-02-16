@@ -1,4 +1,5 @@
 import django_connect
+import re
 # from celery import Celery
 # app = Celery('tasks', broker='amqp://guest:guest@localhost//')
 from api.models import *
@@ -18,7 +19,7 @@ def create_new_db(product):
     retail = save_retail(product[2])
     category = save_category(product[8])
     new_product = Products.objects.create(
-        ProductName = product[1],
+        ProductName = data_clean(product[1]),
         BrandID = brand,
         Price = product[4],
         Stock = product[5],
@@ -109,6 +110,15 @@ def create_log(id, attrib, old, new):
 
 # def DelItem():
 #     Categories.objects.filter(CategoryID='7').delete()
+
+# clean thai word
+def data_clean(name):
+    pattern = r"[\u0E00-\u0E7F\s]"
+    name = re.sub(pattern, "", name)
+    name = name.replace("()", "")
+    name.replace("  ", "")
+    name.strip()
+    return name
 
 if __name__ == '__main__':
     print("This is function module")
