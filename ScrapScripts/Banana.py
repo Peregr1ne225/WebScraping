@@ -1,6 +1,7 @@
 import SeleniumScrap
 import time
 from save_to_DB import save_list
+import re
 
 error_list = []
 loop_time = []
@@ -118,7 +119,7 @@ def get_item(soup, path, id): #Per Page
     
     for item in soup.find_all("a", {"class":"product-link"}):
         id = id + 1
-        name = item.find("div", {"class":"product-name"}).get("title")
+        name = name_clean(item.find("div", {"class":"product-name"}).get("title"))
         url = "https://www.bnn.in.th/" + "th" + item.get("href")[3::]
         brand = item.find("div", {"class":"product-label-brand"}).text.strip()
         price = item.find("div", {"class":"product-price"}).text.strip()
@@ -144,5 +145,19 @@ def get_item(soup, path, id): #Per Page
     
     return list_menu, id
 
+def name_clean(name):
+    if "ซีพียู" in name:
+        pattern = r"\b\d+\.\d+\s*GHz.*"
+        name = re.sub(pattern, "", name)
+        name = name.replace("CPU", "")
+    name = name.strip()
+    name = name.replace("  ", " ")
+
+    pattern = r"[\u0E00-\u0E7F\s]+\s" #Remove Thai Word
+    name = re.sub(pattern, "", name)
+    print(name)
+    return name
+
 if __name__ == '__main__':
-    get_path()
+    #get_path()
+    name_clean("เมนบอร์ด Asus Mainboard PRIME B760M-A WIFI DDR5 LGA-1700")

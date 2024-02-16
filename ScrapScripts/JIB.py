@@ -2,6 +2,7 @@ import SeleniumScrap
 import time
 from save_to_DB import save_list
 import math
+import re
 
 error_list = []
 loop_time = []
@@ -109,7 +110,7 @@ def get_item(soup, path, brand):
     list_menu = []
     for item in soup.find_all("div", {"class":"reladiv"}): #item
         product_code = "j" + item.find("div", {"class":"buy_promo"}).get("data-id") #code
-        product_name = item.find("span", {"class":"promo_name"}).text #name
+        product_name = name_clean(item.find("span", {"class":"promo_name"}).text) #name
         url = item.find("div", {"class":"size_img"}).find("a").get("href")
         
         try:
@@ -126,5 +127,20 @@ def get_item(soup, path, brand):
     print(list_menu[-1])
     save_list(list_menu)
      
+def name_clean(name):
+    pattern = r"\([\u0E00-\u0E7F\s]+\)" #Remove Thai Word
+    name = re.sub(pattern, "", name)
+    #print(name)
+
+    if "CPU" in name:
+        pattern = r"\b\d+\.\d+\s*GHz|\(\w*SOCKET\s*\w*\s*\w*\)|\(CPU COOLER NOT INCLUDED\)"
+        name = re.sub(pattern, "", name)
+        name = name.replace("CPU", "")
+    name = name.strip()
+    name = name.replace("  ", " ")
+    print(name)
+    return name
+
 if __name__ == '__main__':
-    get_sub()
+    name_clean("CPU (ซีพียู) AMD RYZEN 7 7800X3D 4.2 GHz (SOCKET AM5) (CPU COOLER NOT INCLUDED)")
+    #get_sub()

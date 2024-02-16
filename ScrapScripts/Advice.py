@@ -1,6 +1,7 @@
 import SeleniumScrap
 import time
 from save_to_DB import save_list
+import re
 
 error_list = []
 loop_time = []
@@ -66,7 +67,7 @@ def get_item(soup, last):
     #print(head_cate)
     for menu in soup.find_all("div", {"class":"item"}):
         product_code = menu.get("code-product-item")
-        product_name = menu.get("item-name")
+        product_name = name_clean(menu.get("item-name"))
         url = "No Link"
         
         for a in menu.find_all("a"):
@@ -95,5 +96,17 @@ def get_item(soup, last):
 
     return list_menu
 
+def name_clean(name):
+    if "CPU" in name:
+        name = name.replace("(NEXT)", "")
+        pattern = r"AM\w*\b|LGA\s*\w*\b"
+        name = re.sub(pattern, "", name)
+        name = name.replace("CPU", "")
+    name = name.strip()
+    name = name.replace("  ", " ")
+    print(name)
+    return name
+
 if __name__ == '__main__':
-    get_sub()
+    #get_sub()
+    name_clean("CPU INTEL CORE I3-12100 LGA 1700 (NEXT)")
