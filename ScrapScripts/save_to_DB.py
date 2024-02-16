@@ -151,7 +151,7 @@ def string_matching(new_product):
         products = Products.objects.exclude(RetailID=3)
     for product in products:
     # Do something with the product
-        similarity = fuzz.token_set_ratio(new_product.ProductName.upper(), product.ProductName.upper())
+        similarity = fuzz.token_sort_ratio(new_product.ProductName.upper(), product.ProductName.upper())
         if similarity > 80 and max_similarity < similarity:
             print(f"Similarity of {new_product.ProductID} and {product.ProductID} is {similarity}")
             max_similarity = similarity
