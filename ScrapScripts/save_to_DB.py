@@ -17,11 +17,20 @@ def save_list(list_item):
 
 def create_new_db(product):
     print(product)
+    if "b" in product[0]:
+        last_product = Products.objects.filter(RetailID=3).order_by('ProductID').last()
+        if last_product is None:
+            p_id = "b1"
+        else: 
+            p_id = int(last_product.ProductID[1:]) + 1
+    else:
+        p_id = product[0]
     brand = save_brand(product[3])
     retail = save_retail(product[2])
     category = save_category(product[8])
     name_clean = data_clean(product[1])
     new_product = Products.objects.create(
+        ProductID = p_id,
         ProductName = name_clean,
         BrandID = brand,
         Price = product[4],
