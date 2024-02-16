@@ -22,7 +22,7 @@ def create_new_db(product):
         if last_product is None:
             p_id = "b1"
         else: 
-            p_id = "b" + str(int(last_product.ProductID[1:]) + 1))
+            p_id = "b" + str(int(last_product.ProductID[1:]) + 1)
     else:
         p_id = product[0]
     brand = save_brand(product[3])
