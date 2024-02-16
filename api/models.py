@@ -40,7 +40,7 @@ class Retailers(models.Model):
         return f"RetailID: {self.RetailID}, Retail: {self.Retail}, RetailLogo: {self.RetailLogo}"
 
 class Products(models.Model):
-    ProductID = models.AutoField(primary_key=True)
+    ProductID = models.CharField(max_length=10, primary_key=True)
     ProductName = models.CharField(max_length=255)
     BrandID = models.ForeignKey(Brands, on_delete=models.CASCADE)
     Price = models.DecimalField(max_digits=10, decimal_places=2)
