@@ -125,8 +125,10 @@ def data_clean(name):
     return name
 
 def get_max_group():
-    max = Products.objects.aggregate(max_similar_group=Max('SimilarGroup'))['max_similar_group']
-    return max
+    max_similar_group_value = Products.objects.aggregate(max_similar_group=Max('SimilarGroup'))['max_similar_group']
+    if max_similar_group_value is None:
+        max_similar_group_value = 0
+    return max_similar_group_value
 
 def string_matching(new_product):
     max_semilar = get_max_group()
