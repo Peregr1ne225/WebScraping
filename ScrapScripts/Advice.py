@@ -22,7 +22,7 @@ def get_sub():
     print(len(list_link))
     start_op = time.time()
     
-    for link in list_link[30::]:
+    for link in list_link:
         print("Begin:", link)
         start_loop = time.time()
         #link = "https://www.advice.co.th//productcorporate/กล้อง-ip-camera"
