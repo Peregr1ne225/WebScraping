@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'api',  # Oup app
     'rest_framework',  # DRF
+    'rest_framework.authtoken',
     'celery'
 ]
 

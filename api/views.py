@@ -4,11 +4,17 @@ from django.shortcuts import render
 from .models import *
 from .serializers import *
 from rest_framework import permissions, viewsets
+from rest_framework.authentication import TokenAuthentication
+from django.contrib.auth import authenticate
+from rest_framework.authtoken.models import Token
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 class ProductViewset(viewsets.ModelViewSet):
     queryset = Products.objects.all()
     serializer_class = ProductSerializer
-    #permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
     
     def get_queryset(self):
         queryset = super().get_queryset()
