@@ -40,7 +40,7 @@ class Retailers(models.Model):
         return f"RetailID: {self.RetailID}, Retail: {self.Retail}, RetailLogo: {self.RetailLogo}"
 
 class Products(models.Model):
-    ProductID = models.AutoField(primary_key=True)
+    ProductID = models.CharField(max_length=10, primary_key=True)
     ProductName = models.CharField(max_length=255)
     BrandID = models.ForeignKey(Brands, on_delete=models.CASCADE)
     Price = models.DecimalField(max_digits=10, decimal_places=2)
@@ -52,6 +52,7 @@ class Products(models.Model):
     RetailID = models.ForeignKey(Retailers, on_delete=models.CASCADE)
     DateEdit = models.DateTimeField(auto_now=True)
     SimilarGroup = models.IntegerField(null=True, blank=True)
+    SimilarScore = models.IntegerField(null=True, blank=True)
     DateCreate = models.DateTimeField(auto_now_add=True)
     class Meta:
         db_table = "Products"
@@ -73,11 +74,3 @@ class Logs(models.Model):
     
     def __str__(self):
         return f"ProductID: {self.ProductID}, EditAttrib: {self.EditAttrib}, OldData: {self.OldData}, NewData: {self.NewData}"
-
-
-
-
-
-
-    
-

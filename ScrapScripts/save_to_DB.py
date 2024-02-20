@@ -1,7 +1,10 @@
 import django_connect
+import re
 # from celery import Celery
 # app = Celery('tasks', broker='amqp://guest:guest@localhost//')
 from api.models import *
+from django.db.models import Max
+from thefuzz import fuzz
 
 #@app.task
 def save_list(list_item):
@@ -14,11 +17,24 @@ def save_list(list_item):
 
 def create_new_db(product):
     print(product)
+    if "b" in product[0]:
+        last_product = Products.objects.filter(RetailID=3).order_by('ProductID').last()
+        if last_product is None:
+
+            p_id = "b000001"
+        else: 
+            p_id = "b" + (str(int(last_product.ProductID[1:]) + 1).zfill(6))
+    else:
+        p_id = product[0]
     brand = save_brand(product[3])
     retail = save_retail(product[2])
     category = save_category(product[8])
+    name_clean = data_clean(product[1])
+    if Products.objects.filter(ProductID=p_id).exists():
+        return
     new_product = Products.objects.create(
-        ProductName = product[1],
+        ProductID = p_id,
+        ProductName = name_clean,
         BrandID = brand,
         Price = product[4],
         Stock = product[5],
@@ -28,6 +44,7 @@ def create_new_db(product):
         CategoryID = category,
         RetailID = retail,
     )
+    string_matching(new_product)
     print(new_product)
     
 def save_brand(brand):
@@ -75,11 +92,6 @@ def check_update(product):
         return
     old_price = "{:.2f}".format(float(old_product.Price))
     new_price = "{:.2f}".format(float(product[4]))
-    if old_product.ProductName != product[1]:
-        Products.objects.filter(URL = product[2]).update(ProductName = product[1])
-        update_product = Products.objects.get(URL = product[2])
-        create_log(update_product, "ProductName", old_product.ProductName, update_product.ProductName)
-    
     if old_price != new_price:
         Products.objects.filter(URL = product[2]).update(Price = product[4])
         update_product = Products.objects.get(URL = product[2])
@@ -110,8 +122,54 @@ def create_log(id, attrib, old, new):
 # def DelItem():
 #     Categories.objects.filter(CategoryID='7').delete()
 
+# clean thai word
+def data_clean(name):
+    pattern = r"[\u0E00-\u0E7F]+"
+    name = re.sub(pattern, "", name)
+    name = name.replace("()", "")
+    while True:
+        if "  " in name:
+            name = name.replace("  ", " ")
+        else:
+            break
+    name.strip()
+    print(name)
+    return name
+
+def get_max_group():
+    max_similar_group_value = Products.objects.aggregate(max_similar_group=Max('SimilarGroup'))['max_similar_group']
+    if max_similar_group_value is None:
+        max_similar_group_value = 0
+    return max_similar_group_value
+
+def string_matching(new_product):
+    max_similarity = 0
+    retail = new_product.RetailID.RetailID
+    if retail == 1:
+        products = Products.objects.exclude(RetailID=1)
+    elif retail == 2:
+        products = Products.objects.exclude(RetailID=2)
+    else:
+        products = Products.objects.exclude(RetailID=3)
+    for product in products:
+    # Do something with the product
+        similarity = fuzz.token_sort_ratio(new_product.ProductName.upper(), product.ProductName.upper())
+        if similarity > 80 and max_similarity < similarity:
+            print(f"Similarity of {new_product.ProductID} and {product.ProductID} is {similarity}")
+            max_similarity = similarity
+            new_product.SimilarGroup = product.SimilarGroup
+            new_product.SimilarScore = similarity
+            new_product.save()
+            #break
+    if new_product.SimilarGroup is None:
+        max_similar = get_max_group()
+        new_product.SimilarGroup = max_similar + 1
+        new_product.SimilarScore = 100
+        new_product.save()
+                
+
 if __name__ == '__main__':
     print("This is function module")
-    #check_update()
+    #data_clean("VGA (การ์ดแสดงผล) ASUS GEFORCE GT 730 2GB DDR3 EVO (GT730-SL-2GD3-BRK-EVO)")
 else:
     pass

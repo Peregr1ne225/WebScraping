@@ -14,9 +14,15 @@ class ProductViewset(viewsets.ModelViewSet):
     
     def get_queryset(self):
         queryset = super().get_queryset()
-        ProductID = self.request.query_params.get('ProductID')
-        if ProductID:
-            queryset = queryset.filter(ProductID=ProductID)
+        id = self.request.query_params.get('id')
+        group = self.request.query_params.get('group')
+        retail = self.request.query_params.get('retail')
+        if id:
+            queryset = queryset.filter(ProductID=id)
+        if group:
+            queryset = queryset.filter(SimilarGroup=group)
+        if retail:
+            queryset = queryset.filter(RetailID=retail)
         return queryset
     
 class BrandViewset(viewsets.ModelViewSet):
