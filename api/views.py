@@ -1,10 +1,12 @@
 from django.shortcuts import render
 
 # Create your views here.
+from django.http import HttpResponse
 from .models import *
 from .serializers import *
 from rest_framework import permissions, viewsets
 from rest_framework.authentication import TokenAuthentication
+from django.template import loader
 
 class ProductViewset(viewsets.ModelViewSet):
     queryset = Products.objects.all()
@@ -44,3 +46,7 @@ class LogViewset(viewsets.ModelViewSet):
     queryset = Logs.objects.all()
     serializer_class = LogSerializer
     #permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+def FirstView(request):
+    template = loader.get_template('first.html')
+    return HttpResponse(template.render())
