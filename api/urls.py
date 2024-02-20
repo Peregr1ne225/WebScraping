@@ -1,6 +1,6 @@
-from django.urls import path
-from api.views import FirstView
+from django.urls import path, include
+from api.views import home
 
 urlpatterns = [
-    path('', FirstView, name='first'),
+    path('', home, name='home'),
 ]

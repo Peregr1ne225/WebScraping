@@ -1,0 +1,27 @@
+body {
+    background-color: #f0f0f0;
+    font-family: "Roboto", sans-serif;;
+}
+
+h1 {
+    color: #e42121;
+    font-size: 42px;
+    font-weight: bold;
+    margin: 0;
+    padding: 0;
+}
+
+#navbarNav{
+    justify-content: space-between;
+    align-self: right;
+}
+
+#login-button{
+    color: #ff0202;
+}
+
+.sidebar{
+    background-color: #021af3;
+}
+
+

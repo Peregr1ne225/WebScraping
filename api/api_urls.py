@@ -14,5 +14,6 @@ router.register(r'log', views.LogViewset)
 urlpatterns = [
     path('api/', include(router.urls)),
     path('api-token-auth/', obtain_auth_token, name='api_token_auth'),
-    path('', include('api.urls')),
 ]
+
+urlpatterns += router.urls

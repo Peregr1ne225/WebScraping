@@ -1,18 +1,18 @@
 from django.shortcuts import render
 
 # Create your views here.
-from django.http import HttpResponse
+#from django.http import HttpResponse
 from .models import *
 from .serializers import *
 from rest_framework import permissions, viewsets
 from rest_framework.authentication import TokenAuthentication
-from django.template import loader
+import requests
 
 class ProductViewset(viewsets.ModelViewSet):
     queryset = Products.objects.all()
     serializer_class = ProductSerializer
-    permission_classes = [permissions.IsAuthenticated]
-    authentication_classes = [TokenAuthentication]
+    # permission_classes = [permissions.IsAuthenticated]
+    # authentication_classes = [TokenAuthentication]
     
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -47,6 +47,9 @@ class LogViewset(viewsets.ModelViewSet):
     serializer_class = LogSerializer
     #permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
-def FirstView(request):
-    template = loader.get_template('first.html')
-    return HttpResponse(template.render())
+def home(request):
+    response = requests.get('http://127.0.0.1:8000/api/product/')
+    data = response.json()
+    data = data['results']
+    #print(data)
+    return render(request, 'index.html', {'data': data})
