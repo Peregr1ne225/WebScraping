@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{%block title%}Home{%endblock%}
+{% block content %}
+    <div class="item-cate">
+        <div id="item_group"class="item-group" >
+            <p>Product ID</p>
+            <p>Product Name</p>
+        </div>
+    </div>
+{% endblock %}
+{%block script%}
+<script type="text/javascript">
+    let data = JSON.parse('{{ data|escapejs|safe }}');
+    for(let i=0; i < data.length; i++){
+        let similargroup = data[i].SimilarGroup;
+        //console.log(similargroup);
+        fetch('/api/product/?group='+similargroup)
+            .then(response => response.json())
+            .then(
+                product => {
+                    console.log(product.results);
+                    product.results.forEach(function(item){
+                        var item_cate = document.querySelector('.item-cate');
+                        var item_div = document.createElement('div');
+                        item_div.classList.add('item-group');
+                        
+                        var p1 = document.createElement('p');
+                        var p2 = document.createElement('p');
+                        p1.textContent = item.ProductID;
+                        p2.textContent = item.ProductName;
+                        
+                        item_div.appendChild(p1);
+                        item_div.appendChild(p2);
+                        item_cate.appendChild(item_div);
+                    });
+                }
+            )
+            .catch(
+                error => {
+                    console.log(error);
+                }
+            )
+    }
+</script>
+{%endblock%}

@@ -34,4 +34,5 @@ class CategorySerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Categories
-        fields = ['CategoryID', 'CategoryName', 'ParentCategoryID', 'child_categories']
+        fields = ['CategoryID', 'CategoryName', 'CategoryScore','ParentCategoryID', 'child_categories']
+        #fields = '__all__'

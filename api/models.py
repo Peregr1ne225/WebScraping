@@ -58,6 +58,7 @@ class Products(models.Model):
     DateCreate = models.DateTimeField(auto_now_add=True)
     class Meta:
         db_table = "Products"
+        ordering = ['ProductID']
     
     def __str__(self):
         return f"ProductID: {self.ProductID}, ProductName: {self.ProductName}"
