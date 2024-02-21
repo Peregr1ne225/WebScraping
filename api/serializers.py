@@ -24,7 +24,14 @@ class LogSerializer(serializers.ModelSerializer):
         model = Logs
         fields = '__all__'
 
+class RecursionSerializer(serializers.ModelSerializer):
+    def to_representation(self, value):
+        serializers = self.parent.parent.__class__(value, context=self.context)
+        return serializers.data
+
 class CategorySerializer(serializers.ModelSerializer):
+    child_categories = RecursionSerializer(many=True, read_only=True)
+    
     class Meta:
         model = Categories
-        fields = '__all__'
+        fields = ['CategoryID', 'CategoryName', 'ParentCategoryID', 'child_categories']

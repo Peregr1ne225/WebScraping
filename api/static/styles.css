@@ -3,12 +3,14 @@ body {
     font-family: "Roboto", sans-serif;;
 }
 
-h1 {
-    color: #e42121;
-    font-size: 42px;
-    font-weight: bold;
-    margin: 0;
-    padding: 0;
+.search-container {
+    display: flex;
+    align-items: center;
+}
+
+.navbar-brand {
+    line-height: 60px;
+    color: #0d5dd4;
 }
 
 #navbarNav{
@@ -16,12 +18,39 @@ h1 {
     align-self: right;
 }
 
-#login-button{
-    color: #ff0202;
+.fas.fa-search{
+    padding-right: 10px;
+}
+
+.search-container{
+    margin: auto;
+    padding-right: 10%;
+}
+
+.admin-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 10px;
 }
 
 .sidebar{
     background-color: #021af3;
 }
 
+#dropdownMenuLink{
+    color: #ff0000;
+    font-size: 20px;
+    text-decoration: none;
+}
+ul.dropdown-menu{
+    background-color: #72d4ec;
+}
 
+h1 {
+    color: #e42121;
+    font-size: 42px;
+    font-weight: bold;
+    margin: 0;
+    padding: 0;
+}

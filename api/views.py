@@ -36,6 +36,14 @@ class CategoryViewset(viewsets.ModelViewSet):
     queryset = Categories.objects.all()
     serializer_class = CategorySerializer
     #permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        parent = self.request.query_params.get('parent')
+        if parent is None:
+            queryset = queryset.filter(ParentCategoryID=None)
+        elif parent:
+            queryset = queryset.filter(ParentCategoryID=parent)
+        return queryset
 
 class RetailerViewset(viewsets.ModelViewSet):
     queryset = Retailers.objects.all()
