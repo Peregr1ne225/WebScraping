@@ -143,6 +143,7 @@ def get_max_group():
     return max_similar_group_value
 
 def string_matching(new_product):
+    new_name = data_clean(new_product.ProductName).upper()
     max_similarity = 0
     retail = new_product.RetailID.RetailID
     if retail == 1:
@@ -153,7 +154,8 @@ def string_matching(new_product):
         products = Products.objects.exclude(RetailID=3)
     for product in products:
     # Do something with the product
-        similarity = fuzz.token_sort_ratio(new_product.ProductName.upper(), product.ProductName.upper())
+        product_name = data_clean(product.ProductName).upper()
+        similarity = fuzz.token_sort_ratio(new_name, product_name)
         if similarity > 80 and max_similarity < similarity:
             print(f"Similarity of {new_product.ProductID} and {product.ProductID} is {similarity}")
             max_similarity = similarity

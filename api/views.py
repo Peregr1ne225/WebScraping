@@ -17,6 +17,7 @@ class NoLimitPagination(pagination.PageNumberPagination):
 class ProductViewset(viewsets.ModelViewSet):
     queryset = Products.objects.all()
     serializer_class = ProductSerializer
+    #pagination_class = NoLimitPagination
     # permission_classes = [permissions.IsAuthenticated]
     # authentication_classes = [TokenAuthentication]
     
@@ -85,7 +86,14 @@ def home(request):
     return render(request, 'index.html', {'data': data})
 
 def cate(request, id):
-    response = requests.get('http://127.0.0.1:8000/api/product/?category='+str(id))
-    data = response.json()
-    data = data['results']
-    return render(request, 'cate.html', {'data': json.dumps(data)})
+    url = 'http://127.0.0.1:8000/api/product/?category=' + str(id)
+    results = []
+
+    while url:
+        response = requests.get(url)
+        data = response.json()
+        results.extend(data['results'])
+
+        url = data['next'] if 'next' in data else None
+
+    return render(request, 'cate.html', {'data': json.dumps(results)})

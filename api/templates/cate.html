@@ -31,6 +31,8 @@
         let brandExist = []
         let currentUrl = new URL(window.location.href);
         currentUrl = currentUrl.origin + currentUrl.pathname;
+        let minPrice = 0;
+        let maxPrice = 0;
         let brandParent = document.getElementById('dynamicBrand');
         for(let group of groupset){
             console.log(group);
@@ -48,19 +50,38 @@
                         brandExist.push(item.BrandID);
                         createBrand(item.BrandID, item.BrandName, currentUrl, brandParent);
                     }
+                    //find min and max price
+                    if(minPrice == 0 || minPrice > item.Price || maxPrice == 0 || maxPrice < item.Price) {
+                        if(minPrice == 0 || minPrice > item.Price) minPrice = item.Price;
+                        if(maxPrice == 0 || maxPrice < item.Price) maxPrice = item.Price;
+                    
+                        minPrice = parseFloat(minPrice);
+                        maxPrice = parseFloat(maxPrice);
+                        slider.noUiSlider.updateOptions({
+                            start: [minPrice, maxPrice],
+                            range: {
+                                'min': minPrice,
+                                'max': maxPrice
+                            }
+                        });
+                    }
+                    // create product
                     var item_div = document.createElement('div');
                     item_div.classList.add('item-product');
+                    item_div.id = item.ProductID;
                     
+                    // create product detail
                     var p1 = document.createElement('p');
                     var p2 = document.createElement('p');
                     p1.innerHTML = item.ProductID;
                     p2.innerHTML = item.ProductName;
 
+                    // append product detail to product
                     item_div.appendChild(p1);
                     item_div.appendChild(p2);
                     item_group.appendChild(item_div);
                 });
-                item_cate.appendChild(item_group);
+                item_cate.appendChild(item_group); // append product to category
             }
             catch(error){
                 console.log(error);
