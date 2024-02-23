@@ -40,6 +40,7 @@ class ProductViewset(viewsets.ModelViewSet):
 class BrandViewset(viewsets.ModelViewSet):
     queryset = Brands.objects.all()
     serializer_class = BrandSerializer
+    pagination_class = NoLimitPagination
     #permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 class CategoryViewset(viewsets.ModelViewSet):

@@ -1,45 +1,81 @@
 {% extends "base.html" %}
-{%block title%}Home{%endblock%}
+{% block title %} Home {% endblock title %}
+{% block brand %}
+<div id="dynamicBrand" class="list-group list-group-flush list-of-brand">
+    <a href="#item-1" class="list-group-item list-of-brand">
+        Item 1 
+    </a>
+    <a href="#item-2" class="list-group-item list-of-brand">
+        Item 2 
+    </a>
+    <a href="#item-3" class="list-group-item list-of-brand" > Item 3 </a>
+</div>
+{% endblock brand %}
 {% block content %}
-    <div class="item-cate">
-        <div id="item_group"class="item-group" >
+    <div class="item-group">
+        <div class="item-product" >
             <p>Product ID</p>
             <p>Product Name</p>
         </div>
     </div>
-{% endblock %}
-{%block script%}
-<script type="text/javascript">
+    
+{% endblock content %}
+{% block script %}
+<script>
     let data = JSON.parse('{{ data|escapejs|safe }}');
+    let groupset = new Set();
     for(let i=0; i < data.length; i++){
-        let similargroup = data[i].SimilarGroup;
-        //console.log(similargroup);
-        fetch('/api/product/?group='+similargroup)
-            .then(response => response.json())
-            .then(
-                product => {
-                    console.log(product.results);
-                    product.results.forEach(function(item){
-                        var item_cate = document.querySelector('.item-cate');
-                        var item_div = document.createElement('div');
-                        item_div.classList.add('item-group');
-                        
-                        var p1 = document.createElement('p');
-                        var p2 = document.createElement('p');
-                        p1.textContent = item.ProductID;
-                        p2.textContent = item.ProductName;
-                        
-                        item_div.appendChild(p1);
-                        item_div.appendChild(p2);
-                        item_cate.appendChild(item_div);
-                    });
-                }
-            )
-            .catch(
-                error => {
-                    console.log(error);
-                }
-            )
+        groupset.add(data[i].SimilarGroup);     
+    }
+    window.addEventListener('load', async function() {
+        let brandExist = []
+        let currentUrl = new URL(window.location.href);
+        currentUrl = currentUrl.origin + currentUrl.pathname;
+        let brandParent = document.getElementById('dynamicBrand');
+        for(let group of groupset){
+            console.log(group);
+            var item_cate = document.querySelector('.main-item');
+            var item_group = document.createElement('div');
+            item_group.classList.add('item-group');
+            try{
+                let response = await fetch('http://127.0.0.1:8000/api/product/?group='+group);
+                let product = await response.json();
+                product.results.forEach(function(item){
+                    console.log(item)
+                    
+                    // create brand
+                    if(!brandExist.includes(item.BrandID)) {
+                        brandExist.push(item.BrandID);
+                        createBrand(item.BrandID, item.BrandName, currentUrl, brandParent);
+                    }
+                    var item_div = document.createElement('div');
+                    item_div.classList.add('item-product');
+                    
+                    var p1 = document.createElement('p');
+                    var p2 = document.createElement('p');
+                    p1.innerHTML = item.ProductID;
+                    p2.innerHTML = item.ProductName;
+
+                    item_div.appendChild(p1);
+                    item_div.appendChild(p2);
+                    item_group.appendChild(item_div);
+                });
+                item_cate.appendChild(item_group);
+            }
+            catch(error){
+                console.log(error);
+            }
+        }
+    });
+    function createBrand(brandID, brandName, currentUrl, brandParent){
+        console.log("load");
+        let brandItem = document.createElement('a');
+        brandItem.href = currentUrl + "?brand=" + brandID;
+        //brandItem.id = brandID;
+        brandItem.className = "list-group-item list-of-brand";
+        //onlick brandItem.setAttribute('onclick', 'loadBrand(this.id)');
+        brandItem.textContent = brandName;
+        brandParent.appendChild(brandItem);
     }
 </script>
-{%endblock%}
+{% endblock script %}

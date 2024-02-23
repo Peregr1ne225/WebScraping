@@ -1,14 +1,6 @@
 from rest_framework import serializers
 from .models import *
 
-class ProductSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Products
-        fields = ('ProductID', 'ProductName', 'BrandID', 'Price', 'Stock', 
-                  'Description', 'URL', 'PicURL', 'CategoryID', 'RetailID',
-                  'DateEdit', 'SimilarGroup', 'SimilarScore', 'DateCreate')
-        #fields = ('ProductName', 'Price', 'Stock', 'Description', 'SimilarGroup', 'SimilarScore')
-        
 class BrandSerializer(serializers.ModelSerializer):
     class Meta:
         model = Brands
@@ -36,3 +28,15 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Categories
         fields = ['CategoryID', 'CategoryName', 'CategoryScore','ParentCategoryID', 'child_categories']
         #fields = '__all__'
+
+class ProductSerializer(serializers.ModelSerializer):
+    BrandName = serializers.SlugRelatedField(source='BrandID', read_only=True, slug_field='BrandName')
+    RetailName = serializers.SlugRelatedField(source='RetailID', read_only=True, slug_field='Retail')
+    class Meta:
+        model = Products
+        fields = ('ProductID', 'ProductName', 'BrandID', 'BrandName',
+                  'Price', 'Stock', 'Description', 'URL', 'PicURL', 
+                  'CategoryID', 'RetailID', 'RetailName', 'DateEdit', 
+                  'SimilarGroup', 'SimilarScore', 'DateCreate')
+        #fields = ('ProductName', 'Price', 'Stock', 'Description', 'SimilarGroup', 'SimilarScore')
+        

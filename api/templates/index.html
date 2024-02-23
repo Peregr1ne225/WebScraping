@@ -1,7 +1,46 @@
 {% extends "base.html" %}
-{%block title%}Home{%endblock%}
+{%block title%}Home{%endblock title%}
+{% block brand %}
+<div id="dynamicBrand" class="list-group list-group-flush list-of-brand">
+    <a href="#item-1" class="list-group-item list-of-brand">
+        Item 1 
+    </a>
+    <a href="#item-2" class="list-group-item list-of-brand">
+        Item 2 
+    </a>
+    <a href="#item-3" class="list-group-item list-of-brand" > Item 3 </a>
+</div>
+{% endblock brand%}
 {% block content %}
     {% for item in data %}
         
     {% endfor %}
-{% endblock %}
+{% endblock content %}
+{% block script %}
+<script>
+    window.addEventListener('load', function() {
+        try {
+            fetch("http://127.0.0.1:8000/api/brand/")
+            .then(response => response.json())
+            .then(data => {
+                brandtoSubmenu(data, document.getElementById("dynamicBrand"))
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    });
+    function brandtoSubmenu(brand, parentElement){
+        let currentUrl = new URL(window.location.href);
+        currentUrl = currentUrl.origin + currentUrl.pathname;
+        for(let i=0;i<brand.length;i++) {
+            let brandLink = document.createElement("a");
+            brandLink.href = currentUrl + "?brand=" + brand[i].BrandID;
+            //brandItem.id = brandID;
+            brandLink.className = "list-group-item list-of-brand";
+            //onlick brandItem.setAttribute('onclick', 'loadBrand(this.id)');
+            brandLink.textContent = brand[i].BrandName;
+            parentElement.appendChild(brandLink)
+        }
+    }
+</script>
+{% endblock script %}

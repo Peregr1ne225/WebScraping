@@ -8,6 +8,7 @@ class Brands(models.Model):
 
     class Meta:
         db_table = "Brands"
+        ordering = ['BrandName']
     
     def __str__(self):
         return f"BrandID: {self.BrandID}, Brand: {self.BrandName}"
@@ -26,6 +27,7 @@ class Categories(models.Model):
 
     class Meta:
         db_table = "Categories"
+        ordering = ['CategoryName']
     
     def __str__(self):
         return f"Category ID: {self.CategoryID}, Name: {self.CategoryName}, Parent ID: {self.ParentCategoryID}"
@@ -58,7 +60,7 @@ class Products(models.Model):
     DateCreate = models.DateTimeField(auto_now_add=True)
     class Meta:
         db_table = "Products"
-        ordering = ['ProductID']
+        ordering = ['-DateCreate']
     
     def __str__(self):
         return f"ProductID: {self.ProductID}, ProductName: {self.ProductName}"

@@ -3,5 +3,5 @@ from api.views import home, cate
 
 urlpatterns = [
     path('', home, name='home'),
-    path('cate/<int:id>/', cate, name='cate'),
+    path('<int:id>/', cate, name='cate'),
 ]
