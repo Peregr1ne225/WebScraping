@@ -29,7 +29,8 @@ class ProductViewset(viewsets.ModelViewSet):
         retail = self.request.query_params.get('retail')
         category = self.request.query_params.get('category')
         brand = self.request.query_params.get('brand')
-        name = self.request.query_params.get('name')
+        search = self.request.query_params.get('search')
+        
         if id:
             queryset = queryset.filter(ProductID=id)
         if group:
@@ -41,8 +42,8 @@ class ProductViewset(viewsets.ModelViewSet):
             queryset = queryset.filter(CategoryID__in=category_ids)
         if brand:
             queryset = queryset.filter(BrandID=brand)
-        if name:
-            queryset = queryset.filter(ProductName__icontains=name)
+        if search:
+            queryset = queryset.filter(ProductName__icontains=search)
         return queryset
     
 class BrandViewset(viewsets.ModelViewSet):
@@ -53,6 +54,7 @@ class BrandViewset(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = super().get_queryset()
         id = self.request.query_params.get('id')
+        
         if id:
             queryset = queryset.filter(BrandID=id)
         return queryset
@@ -82,6 +84,7 @@ class CategoryParentViewset(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = super().get_queryset()
         parent = self.request.query_params.get('parent')
+        
         if parent is None:
             queryset = queryset.filter(ParentCategoryID=None)
         elif parent:
@@ -113,6 +116,7 @@ class CategoryRootViewset(viewsets.ModelViewSet):
 
     def list(self, request, *args, **kwargs):
         id = request.query_params.get('id')
+        
         if id is not None:
             category = self.queryset.get(CategoryID=id)
             root_category = get_top_category(category)
@@ -133,6 +137,7 @@ class LogViewset(viewsets.ModelViewSet):
 def get_descendant_category_ids(CategoryID):
     descendant_ids = set()
     stack = [CategoryID]
+    
     while stack:
         current_id = stack.pop()
         descendant_ids.add(current_id)
@@ -142,24 +147,46 @@ def get_descendant_category_ids(CategoryID):
 
 def home(request):
     brand = request.GET.get('brand')
-    print(brand)
-    if brand:
-        response = requests.get('http://127.0.0.1:8000/api/product/?brand='+brand)
+    search = request.GET.get('search')
+
+    if search:
+        url = f'http://127.0.0.1:8000/api/product/?search={search}'
+        template = 'search.html'
+        if brand:
+            url = url + f'&brand={brand}'
+    elif brand:
+        url = f'http://127.0.0.1:8000/api/product/?brand={brand}'
+        template = 'index.html'
     else:
-        response = requests.get('http://127.0.0.1:8000/api/product/')
+        url = 'http://127.0.0.1:8000/api/product/'
+        template = 'index.html'
+    
+    response = requests.get(url)
     data = response.json()
     data = data['results']
-    return render(request, 'index.html', {'data': json.dumps(data)})
+    return render(request, template, {'data': json.dumps(data)})
 
 def cate(request, id):
-    url = 'http://127.0.0.1:8000/api/product/?category=' + str(id)
+    brand = request.GET.get('brand')
+    search = request.GET.get('search')
     results = []
 
+    if search:
+        url = f'http://127.0.0.1:8000/api/product/?search={search}&category={str(id)}'
+        if brand:
+            url = url + f'&brand={brand}'
+        template = 'search.html'
+    elif brand:
+        url = 'http://127.0.0.1:8000/api/product/?category='+str(id)+'&brand='+brand
+        template = 'cate.html'
+    else:
+        url = 'http://127.0.0.1:8000/api/product/?category=' + str(id)
+        template = 'cate.html'
+    
     while url:
         response = requests.get(url)
         data = response.json()
         results.extend(data['results'])
-
         url = data['next'] if 'next' in data else None
 
-    return render(request, 'cate.html', {'data': json.dumps(results)})
+    return render(request, template, {'data': json.dumps(results)})

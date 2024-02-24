@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block title %} Search {% endblock title%}
+{% block brand %}
+<a href="#item-1" class="list-group-item list-of-brand">
+    Item 1 
+</a>
+<a href="#item-2" class="list-group-item list-of-brand">
+    Item 2 
+</a>
+<a href="#item-3" class="list-group-item list-of-brand" > Item 3 </a>
+
+{% endblock brand %}
+{% block content %}
+<div class="item-product d-flex justify-content-between align-items-center" >
+    <p>Product ID</p>
+    <p>Product Name</p>
+</div>
+{% endblock content %}
+{% block script %}
+<script>
+    let data = JSON.parse('{{data|escapejs|safe}}');
+    window.addEventListener('load', function() {
+        let brandExist = [];
+        let currentUrl = new URL(window.location.href);
+        let minPrice = 0;
+        let maxPrice = 0;
+        let brandParent = document.getElementById('dynamicBrand');
+        let item_display = document.getElementById('product-display');
+        for (let i = 0; i < data.length; i++) {
+            console.log(data[i]);
+            let brand = data[i].BrandID;
+            let price = data[i].price;
+            if (!brandExist.includes(brand)) {
+                brandExist.push(data[i].BrandID)
+                createBrand(data[i].BrandID, data[i].BrandName, brandParent, currentUrl);
+            }
+            if(minPrice == 0 || minPrice > data[i].Price || maxPrice == 0 || maxPrice < data[i].Price) {
+                if(minPrice == 0 || minPrice > data[i].Price) minPrice = data[i].Price;
+                if(maxPrice == 0 || maxPrice < data[i].Price) maxPrice = data[i].Price;
+            
+                minPrice = parseFloat(minPrice);
+                maxPrice = parseFloat(maxPrice);
+                console.log(minPrice, maxPrice);
+                if (minPrice == maxPrice) {
+                    // If they are, adjust maxPrice slightly
+                    maxPrice += 0.01;
+                }
+                slider.noUiSlider.updateOptions({
+                    start: [minPrice, maxPrice],
+                    range: {
+                        'min': minPrice,
+                        'max': maxPrice
+                    }
+                });
+            }
+            // Create a new div for each item
+            let i_div = document.createElement('div');
+            i_div.className = 'item-product d-flex justify-content-between align-items-center';
+            i_div.id = data[i].ProductID;
+            i_div.setAttribute("data-price", data[i].Price);
+
+            // create product detail
+            var p1 = document.createElement('p');
+            var p2 = document.createElement('p');
+            p1.innerHTML = data[i].ProductID;
+            p1.className = 'text-uppercase fw-bold w-25';
+            p2.innerHTML = data[i].ProductName;
+            p2.className = 'text-end text-break flex-shrink-1';
+
+            // Append the div to the list
+            i_div.appendChild(p1);
+            i_div.appendChild(p2);
+            item_display.appendChild(i_div);
+
+        }
+    });
+    function createBrand(brandID, brandName, brandParent, currentUrl){
+        let params = new URLSearchParams(currentUrl.search);
+        let path = currentUrl.origin + currentUrl.pathname;
+        let firstKey = Array.from(params.keys())[0];
+        let firstValue = params.get(firstKey);
+        let brandItem = document.createElement('a');
+        brandItem.href = `${path}?${firstKey}=${firstValue}&brand=${brandID}`;
+        brandItem.className = "list-group-item list-of-brand";
+        //onlick brandItem.setAttribute('onclick', 'loadBrand(this.id)');
+        brandItem.textContent = brandName;
+        brandParent.appendChild(brandItem);
+    }
+</script>
+{% endblock script %}

@@ -22,11 +22,13 @@
 {% endblock content %}
 {% block script %}
 <script>
+    //Create GroupItem
     let data = JSON.parse('{{ data|escapejs|safe }}');
     let groupset = new Set();
     for(let i=0; i < data.length; i++){
         groupset.add(data[i].SimilarGroup);     
     }
+    //Use Group to find product for each group
     window.addEventListener('load', async function() {
         let brandExist = []
         let currentUrl = new URL(window.location.href);
@@ -35,7 +37,7 @@
         let maxPrice = 0;
         let brandParent = document.getElementById('dynamicBrand');
         for(let group of groupset){
-            var item_cate = document.querySelector('.main-item');
+            var item_cate = document.getElementById('product-display');
             var item_group = document.createElement('div');
             item_group.className = 'item-group border border-primary';
             try{
