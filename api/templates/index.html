@@ -12,35 +12,108 @@
 </div>
 {% endblock brand%}
 {% block content %}
-    {% for item in data %}
-        
-    {% endfor %}
+    <div class="item-product d-flex justify-content-between align-items-center" >
+        <p>Product ID</p>
+        <p>Product Name</p>
+    </div>
+
 {% endblock content %}
 {% block script %}
 <script>
     window.addEventListener('load', function() {
         try {
-            fetch("http://127.0.0.1:8000/api/brand/")
-            .then(response => response.json())
-            .then(data => {
+            let url = new URL(window.location.href);
+            if(url.searchParams.get("brand") != null) {
+                let brand = url.searchParams.get("brand");
+                fetch("http://127.0.0.1:8000/api/brand/?id=" + brand)
+                .then(response => response.json())
+                .then(data => {
                 brandtoSubmenu(data, document.getElementById("dynamicBrand"))
-            })
+                })
+            }else{
+                fetch("http://127.0.0.1:8000/api/brand/")
+                .then(response => response.json())
+                .then(data => {
+                brandtoSubmenu(data, document.getElementById("dynamicBrand"))
+                })
+            }
         } catch (error) {
             console.log(error);
         }
     });
     function brandtoSubmenu(brand, parentElement){
         let currentUrl = new URL(window.location.href);
-        currentUrl = currentUrl.origin + currentUrl.pathname;
+        currentUrl = currentUrl.origin;
         for(let i=0;i<brand.length;i++) {
             let brandLink = document.createElement("a");
             brandLink.href = currentUrl + "?brand=" + brand[i].BrandID;
-            //brandItem.id = brandID;
             brandLink.className = "list-group-item list-of-brand";
             //onlick brandItem.setAttribute('onclick', 'loadBrand(this.id)');
             brandLink.textContent = brand[i].BrandName;
             parentElement.appendChild(brandLink)
         }
     }
+</script>
+<script>
+    let data = JSON.parse('{{ data|escapejs|safe }}');
+    let groupset = new Set();
+    for(let i=0; i < data.length; i++){
+        groupset.add(data[i].SimilarGroup);     
+    }
+    window.addEventListener('load', async function() {
+        let minPrice = 0;
+        let maxPrice = 0;
+        for(let group of groupset){
+            var item_cate = document.querySelector('.main-item');
+            var item_group = document.createElement('div');
+            item_group.className = 'item-group border border-primary';
+            try{
+                let response = await fetch('http://127.0.0.1:8000/api/product/?group='+group);
+                let product = await response.json();
+                product.results.forEach(function(item){
+                    console.log(item);
+                    if(minPrice == 0 || minPrice > item.Price || maxPrice == 0 || maxPrice < item.Price) {
+                        if(minPrice == 0 || minPrice > item.Price) minPrice = item.Price;
+                        if(maxPrice == 0 || maxPrice < item.Price) maxPrice = item.Price;
+                    
+                        minPrice = parseFloat(minPrice);
+                        maxPrice = parseFloat(maxPrice);
+                        if (minPrice == maxPrice) {
+                            // If they are, adjust maxPrice slightly
+                            maxPrice += 0.01;
+                        }
+                        slider.noUiSlider.updateOptions({
+                            start: [minPrice, maxPrice],
+                            range: {
+                                'min': minPrice,
+                                'max': maxPrice
+                            }
+                        });
+                    }
+                    // create product
+                    let item_div = document.createElement('div');
+                    item_div.className = 'item-product d-flex justify-content-between align-items-center';
+                    item_div.id = item.ProductID;
+                    item_div.setAttribute("data-price", item.Price);
+
+                    // create product detail
+                    var p1 = document.createElement('p');
+                    var p2 = document.createElement('p');
+                    p1.innerHTML = item.ProductID;
+                    p1.className = 'text-uppercase fw-bold w-25';
+                    p2.innerHTML = item.ProductName;
+                    p2.className = 'text-end text-break flex-shrink-1';
+
+                    // append product detail to product
+                    item_div.appendChild(p1);
+                    item_div.appendChild(p2);
+                    item_group.appendChild(item_div);
+                });
+                item_cate.appendChild(item_group); // append product to category
+            } catch(error){
+                console.log(error);
+            }
+        }
+    });
 </script>
 {% endblock script %}

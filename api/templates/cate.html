@@ -13,7 +13,7 @@
 {% endblock brand %}
 {% block content %}
     <div class="item-group">
-        <div class="item-product" >
+        <div class="item-product d-flex justify-content-between align-items-center" >
             <p>Product ID</p>
             <p>Product Name</p>
         </div>
@@ -35,10 +35,9 @@
         let maxPrice = 0;
         let brandParent = document.getElementById('dynamicBrand');
         for(let group of groupset){
-            console.log(group);
             var item_cate = document.querySelector('.main-item');
             var item_group = document.createElement('div');
-            item_group.classList.add('item-group');
+            item_group.className = 'item-group border border-primary';
             try{
                 let response = await fetch('http://127.0.0.1:8000/api/product/?group='+group);
                 let product = await response.json();
@@ -57,6 +56,10 @@
                     
                         minPrice = parseFloat(minPrice);
                         maxPrice = parseFloat(maxPrice);
+                        if (minPrice == maxPrice) {
+                            // If they are, adjust maxPrice slightly
+                            maxPrice += 0.01;
+                        }
                         slider.noUiSlider.updateOptions({
                             start: [minPrice, maxPrice],
                             range: {
@@ -66,15 +69,18 @@
                         });
                     }
                     // create product
-                    var item_div = document.createElement('div');
-                    item_div.classList.add('item-product');
+                    let item_div = document.createElement('div');
+                    item_div.className = 'item-product d-flex justify-content-between align-items-center';
                     item_div.id = item.ProductID;
-                    
+                    item_div.setAttribute("data-price", item.Price);
+
                     // create product detail
                     var p1 = document.createElement('p');
                     var p2 = document.createElement('p');
                     p1.innerHTML = item.ProductID;
+                    p1.className = 'text-uppercase fw-bold w-25';
                     p2.innerHTML = item.ProductName;
+                    p2.className = 'text-end text-break flex-shrink-1';
 
                     // append product detail to product
                     item_div.appendChild(p1);
@@ -89,10 +95,8 @@
         }
     });
     function createBrand(brandID, brandName, currentUrl, brandParent){
-        console.log("load");
         let brandItem = document.createElement('a');
         brandItem.href = currentUrl + "?brand=" + brandID;
-        //brandItem.id = brandID;
         brandItem.className = "list-group-item list-of-brand";
         //onlick brandItem.setAttribute('onclick', 'loadBrand(this.id)');
         brandItem.textContent = brandName;

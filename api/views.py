@@ -6,7 +6,8 @@ from django.shortcuts import render
 from .models import *
 from .serializers import *
 from rest_framework import permissions, viewsets
-from rest_framework import pagination
+from rest_framework import pagination, status
+from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication
 import requests
 import json
@@ -27,6 +28,8 @@ class ProductViewset(viewsets.ModelViewSet):
         group = self.request.query_params.get('group')
         retail = self.request.query_params.get('retail')
         category = self.request.query_params.get('category')
+        brand = self.request.query_params.get('brand')
+        name = self.request.query_params.get('name')
         if id:
             queryset = queryset.filter(ProductID=id)
         if group:
@@ -36,6 +39,10 @@ class ProductViewset(viewsets.ModelViewSet):
         if category:
             category_ids = get_descendant_category_ids(category)
             queryset = queryset.filter(CategoryID__in=category_ids)
+        if brand:
+            queryset = queryset.filter(BrandID=brand)
+        if name:
+            queryset = queryset.filter(ProductName__icontains=name)
         return queryset
     
 class BrandViewset(viewsets.ModelViewSet):
@@ -43,10 +50,33 @@ class BrandViewset(viewsets.ModelViewSet):
     serializer_class = BrandSerializer
     pagination_class = NoLimitPagination
     #permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        id = self.request.query_params.get('id')
+        if id:
+            queryset = queryset.filter(BrandID=id)
+        return queryset
+    
+    def partial_update(self, request, *args, **kwargs):
+        instance = self.get_object()
 
-class CategoryViewset(viewsets.ModelViewSet):
-    queryset = Categories.objects.all()
+        instance.BrandScore += 1
+        instance.save()
+
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class BrandTopViewset(viewsets.ModelViewSet):
+    queryset = Brands.objects.all().order_by('-BrandScore')[:10]
+    serializer_class = BrandSerializer
+
+class CategoryTopViewset(viewsets.ModelViewSet):
+    queryset = Categories.objects.filter(ParentCategoryID__isnull=True).order_by('-CategoryScore')[:10]
     serializer_class = CategorySerializer
+
+class CategoryParentViewset(viewsets.ModelViewSet):
+    queryset = Categories.objects.all()
+    serializer_class = CategoryParentSerializer
     pagination_class = NoLimitPagination
     #permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     def get_queryset(self):
@@ -57,6 +87,38 @@ class CategoryViewset(viewsets.ModelViewSet):
         elif parent:
             queryset = queryset.filter(ParentCategoryID=parent)
         return queryset
+
+class CategoryViewset(viewsets.ModelViewSet):
+    queryset = Categories.objects.all()
+    serializer_class = CategorySerializer
+
+    def partial_update(self, request, *args, **kwargs):
+        instance = self.get_object()
+
+        instance.CategoryScore += 1
+        instance.save()
+
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+def get_top_category(category):
+    if category.ParentCategoryID is None:
+        return category
+    else:
+        return get_top_category(category.ParentCategoryID)
+
+class CategoryRootViewset(viewsets.ModelViewSet):
+    queryset = Categories.objects.all()
+    serializer_class = CategorySerializer
+
+    def list(self, request, *args, **kwargs):
+        id = request.query_params.get('id')
+        if id is not None:
+            category = self.queryset.get(CategoryID=id)
+            root_category = get_top_category(category)
+            return Response({'root_category_id': root_category.CategoryID})
+        else:
+            return Response({"error": "No id provided"}, status=status.HTTP_400_BAD_REQUEST)
 
 class RetailerViewset(viewsets.ModelViewSet):
     queryset = Retailers.objects.all()
@@ -79,11 +141,15 @@ def get_descendant_category_ids(CategoryID):
     return list(descendant_ids)
 
 def home(request):
-    response = requests.get('http://127.0.0.1:8000/api/product/')
+    brand = request.GET.get('brand')
+    print(brand)
+    if brand:
+        response = requests.get('http://127.0.0.1:8000/api/product/?brand='+brand)
+    else:
+        response = requests.get('http://127.0.0.1:8000/api/product/')
     data = response.json()
     data = data['results']
-    #print(data)
-    return render(request, 'index.html', {'data': data})
+    return render(request, 'index.html', {'data': json.dumps(data)})
 
 def cate(request, id):
     url = 'http://127.0.0.1:8000/api/product/?category=' + str(id)

@@ -21,13 +21,19 @@ class RecursionSerializer(serializers.ModelSerializer):
         serializers = self.parent.parent.__class__(value, context=self.context)
         return serializers.data
 
-class CategorySerializer(serializers.ModelSerializer):
+class CategoryParentSerializer(serializers.ModelSerializer):
     child_categories = RecursionSerializer(many=True, read_only=True)
     
     class Meta:
         model = Categories
         fields = ['CategoryID', 'CategoryName', 'CategoryScore','ParentCategoryID', 'child_categories']
         #fields = '__all__'
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Categories
+        fields = ['CategoryID', 'CategoryName', 'CategoryScore', 'ParentCategoryID']
+
 
 class ProductSerializer(serializers.ModelSerializer):
     BrandName = serializers.SlugRelatedField(source='BrandID', read_only=True, slug_field='BrandName')

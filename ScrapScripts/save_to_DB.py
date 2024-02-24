@@ -29,12 +29,11 @@ def create_new_db(product):
     brand = save_brand(product[3])
     retail = save_retail(product[2])
     category = save_category(product[8])
-    name_clean = data_clean(product[1])
     if Products.objects.filter(ProductID=p_id).exists():
         return
     new_product = Products.objects.create(
         ProductID = p_id,
-        ProductName = name_clean,
+        ProductName = product[1],
         BrandID = brand,
         Price = product[4],
         Stock = product[5],
