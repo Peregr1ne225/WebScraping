@@ -1,12 +1,12 @@
-from django.urls import reverse
 from django.shortcuts import render
+from .savenewscore import check_update
 
 # Create your views here.
 #from django.http import HttpResponse
 from .models import *
 from .serializers import *
 from rest_framework import permissions, viewsets
-from rest_framework import pagination, status
+from rest_framework import pagination, status, exceptions
 from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication
 import requests
@@ -45,6 +45,23 @@ class ProductViewset(viewsets.ModelViewSet):
         if search:
             queryset = queryset.filter(ProductName__icontains=search)
         return queryset
+
+    def partial_update(self, request, *args, **kwargs):
+        try:
+            instance = self.get_object()
+            for field, value in request.data.items():
+                setattr(instance, field, value)
+            
+            if 'ProductName' in request.data and 'ProductID' in request.data:
+                sim_group = check_update(instance.ProductID, request.data['ProductName'])
+                if sim_group is not None:
+                    instance.SimilarGroup = sim_group
+            instance.save()
+            serializer = self.get_serializer(instance)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        
+        except Exception as e:
+            raise exceptions.APIException(str(e))
     
 class BrandViewset(viewsets.ModelViewSet):
     queryset = Brands.objects.all()

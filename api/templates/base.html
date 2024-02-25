@@ -644,13 +644,56 @@
         document.getElementById('submitEditForm').addEventListener('click', function() {
             let modalForm = document.querySelector('#editModal form');
             let csrftoken = document.querySelector('[name=csrf-token]').content;
-            console.log(modalForm);
+            let formSend = new FormData(modalForm);
+            let productId = formSend.get('ProductID');
+            console.log(productId);
+            let url = `http://127.0.0.1:8000/api/product/${productId}/`;
             //modalForm.submit();
-            //let myModal = new bootstrap.Modal(document.getElementById('editModal'));
-            //myModal.show();
+            fetch(url, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken
+                },
+                body: new FormData(modalForm)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+                //responseModal();
+                //setNewData(data);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+
+
+
+
+            //responseModal();
+        });
+
+        function responseModal() {
             let myModal = new bootstrap.Modal(document.getElementById('responseModal'));
             myModal.show();
-        });
+        }
+
+        function setNewData(data) {
+            let productId = data.ProductID;
+            let productName = data.ProductName;
+            let productPrice = data.Price;
+            let productStock = data.Stock;
+            let productDescription = data.Description;
+            let productURL = data.URL;
+            let productPicURL = data.PicURL;
+            let productDiv = document.getElementById(productId);
+            productDiv.children[5].textContent = `Product Name : ${productName}`;
+            productDiv.children[8].textContent = `Price: ${productPrice}`;
+            productDiv.children[6].textContent = `Descpiption: ${productDescription}`;
+            productDiv.children[1].textContent = `URL: ${productURL}`;
+            productDiv.children[2].textContent = `Picture: ${productPicURL}`;
+            productDiv.children[7].textContent = `Stock: ${productStock}`;
+        }
     </script>
 </body>
 </html>
