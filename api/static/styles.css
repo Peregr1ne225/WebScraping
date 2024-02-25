@@ -11,6 +11,7 @@ body {
 .navbar-brand {
     color: #0d5dd4;
 }
+
 #topbrand a{
     color: #2f67df;
     font-size: small;
@@ -19,10 +20,6 @@ body {
 #topcate a{
     color: #5e3092;
     font-size: small;
-}
-
-.fas.fa-search{
-    padding-right: 10px;
 }
 
 .admin-page {
@@ -85,7 +82,7 @@ body {
     overflow-y: auto;
 }
 
-.price p{
+.price-min-max p{
     font-size: small;
 }
 
@@ -114,8 +111,6 @@ body {
     /* Apply your desired styles here */
     margin-right: 8px !important;
 }
-
-
 
 a#dropdownAdminButton{
     color: #ff0000;

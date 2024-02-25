@@ -12,6 +12,33 @@
     <title>{% block title %}{% endblock title%}</title>
 </head>
 <body>
+    <!-- Modal -->
+    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Edit Product Data</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                      <label for="recipient-name" class="col-form-label">Recipient:</label>
+                      <input type="text" class="form-control" id="recipient-name">
+                    </div>
+                    <div class="mb-3">
+                      <label for="message-text" class="col-form-label">Message:</label>
+                      <textarea class="form-control" id="message-text"></textarea>
+                    </div>
+                  </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+        </div>
+    </div>
     <div class="navbar navbar-expand-lg navbar-light bg-light sticky-top" style="z-index: 1030;">
         <div class="container-fluid d-flex justify-content-between">
             <a class="navbar-brand" href="http://127.0.0.1:8000/">Web Scrap</a>
@@ -21,18 +48,19 @@
             <div class="collapse navbar-collapse d-flex " id="navbarNav">
                 <div class="row w-100">
                     <div class="col-md-5">
+                        <!-- Add Top Cate from javaScript-->
                         <div id="topcate" class="navbar-nav">
                     
                         </div>
                     </div>
                     <div class="col-md-2">
-                        <form class="search-container">
-                            <i class="fas fa-search"></i>
-                            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                            <button class="btn btn-outline-success" type="submit">Search</button>
+                        <form class="search-container" action="{{ request.path }}" method="get">
+                            <input name="search" class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                            <button class="btn btn-outline-success" type="submit"><i class="fas fa-search"></i></button>
                         </form>
                     </div>
                     <div class="col-md-5">
+                        <!-- Add Top Brand from javaScript-->
                         <div id="topbrand" class="navbar-nav">
 
                         </div>
@@ -80,7 +108,7 @@
                     {% endblock brand %}
                 </div>
                 
-                <div class="price d-flex align-items-center justify-content-between">
+                <div class="price-min-max d-flex align-items-center justify-content-between">
                     <p>Min value: <span id="min-value"></span></p>
                     <p>Max value: <span id="max-value"></span></p>
                 </div>
@@ -96,7 +124,6 @@
                 
                 {% endblock content %}
                 </div>
-                
             </div>
         </div>
     </div>
@@ -141,13 +168,10 @@
             const csrftoken = getCookie('csrftoken');
             path_part = path.split('/');
             cate_id = path_part[1];
-            console.log(cate_id);
             let url = "http://127.0.0.1:8000/api/category_root/?id=" + cate_id;
             fetch(url).then(response => response.json()).then(data => {
-                console.log(data);
                 cate_id = data.root_category_id;
                 url = "http://127.0.0.1:8000/api/category/"+ cate_id + "/";
-                console.log(url);
                 let patchDataCate = {
                     "CategoryScore": 1
                 };
@@ -172,7 +196,6 @@
         function brandIncrease(brand){
             const csrftoken = getCookie('csrftoken');
             url = "http://127.0.0.1:8000/api/brand/" + brand + "/";
-            console.log(brand);
             let patchDataBrand = {
                 "BrandScore": 1
             };
@@ -271,7 +294,6 @@
         });
         slider.noUiSlider.on('change.one', function (values, handle) {
             let items_div = document.querySelectorAll('div[data-price]');
-            console.log(values[handle]);
             items_div.forEach(item_price => {
                 let price = Number(item_price.dataset.price);
                 if(handle == 0) {
@@ -365,7 +387,22 @@
     </script>
     {% block script %}
     {% endblock script %}
-
+    <script>
+        btn = document.querySelector('#editModal');
+        btn.addEventListener('show.bs.modal', function(event) {
+            // Get the clicked element and its parent
+            var clickedElement = event.relatedTarget;
+            var parentElement = clickedElement.parentElement;
+            
+            // Get the data from the parent element
+            var data = parentElement.getAttribute("data-price");
+            
+            // Set the data in the modal
+            var modalTitle = document.querySelector('.modal-title')
+            var modalBodyInput = document.querySelector('.modal-body input')
+            modalTitle.textContent = "Edit Product";
+            modalBodyInput.value = data;
+        });
+    </script>
 </body>
-
 </html>

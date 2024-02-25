@@ -37,7 +37,7 @@
         let maxPrice = 0;
         let brandParent = document.getElementById('dynamicBrand');
         for(let group of groupset){
-            var item_cate = document.getElementById('product-display');
+            var item_display = document.getElementById('product-display');
             var item_group = document.createElement('div');
             item_group.className = 'item-group border border-primary';
             try{
@@ -72,7 +72,7 @@
                     }
                     // create product
                     let item_div = document.createElement('div');
-                    item_div.className = 'item-product d-flex justify-content-between align-items-center';
+                    item_div.className = 'item-product d-flex justify-content-between position-relative';
                     item_div.id = item.ProductID;
                     item_div.setAttribute("data-price", item.Price);
 
@@ -84,12 +84,42 @@
                     p2.innerHTML = item.ProductName;
                     p2.className = 'text-end text-break flex-shrink-1';
 
+                    // create edit button
+                    var btn = document.createElement('button');
+                    btn.className = 'btn btn-sm btn-outline-success edit-info position-absolute top-0 end-0';
+                    btn.setAttribute('data-bs-toggle', 'modal');
+                    btn.setAttribute('data-bs-target', '#editModal');
+                    btn.setAttribute('title', 'Edit');
+                    btn.setAttribute('aria-label', 'Edit');
+                    var icon = document.createElement('i');
+                    icon.className = 'fas fa-pen-square';
+                    btn.appendChild(icon);
+
                     // append product detail to product
                     item_div.appendChild(p1);
                     item_div.appendChild(p2);
+                    item_div.appendChild(btn);
+
+                    btn.addEventListener('click', function(event) {
+                        // Get the clicked element and its parent
+                        var clickedElement = event.target;
+                        var parentElement = clickedElement.parentElement;
+                
+                        // If the clicked element is the i element, adjust the parent element
+                        if (clickedElement.tagName === 'I') {
+                            parentElement = parentElement.parentElement;
+                        }
+                
+                        // Get the data from the parent element
+                        var data = parentElement.getAttribute("data-price");
+                
+                        // Set the data in the modal
+                        var modalBody = document.querySelector('#myModal .modal-body');
+                        modalBody.textContent = data;
+                    });
                     item_group.appendChild(item_div);
                 });
-                item_cate.appendChild(item_group); // append product to category
+                item_display.appendChild(item_group); // append product to category
             }
             catch(error){
                 console.log(error);
