@@ -44,80 +44,14 @@
                 let response = await fetch('http://127.0.0.1:8000/api/product/?group='+group);
                 let product = await response.json();
                 product.results.forEach(function(item){
-                    console.log(item)
-                    
                     // create brand
                     if(!brandExist.includes(item.BrandID)) {
                         brandExist.push(item.BrandID);
                         createBrand(item.BrandID, item.BrandName, currentUrl, brandParent);
                     }
-                    //find min and max price
-                    if(minPrice == 0 || minPrice > item.Price || maxPrice == 0 || maxPrice < item.Price) {
-                        if(minPrice == 0 || minPrice > item.Price) minPrice = item.Price;
-                        if(maxPrice == 0 || maxPrice < item.Price) maxPrice = item.Price;
-                    
-                        minPrice = parseFloat(minPrice);
-                        maxPrice = parseFloat(maxPrice);
-                        if (minPrice == maxPrice) {
-                            // If they are, adjust maxPrice slightly
-                            maxPrice += 0.01;
-                        }
-                        slider.noUiSlider.updateOptions({
-                            start: [minPrice, maxPrice],
-                            range: {
-                                'min': minPrice,
-                                'max': maxPrice
-                            }
-                        });
-                    }
-                    // create product
-                    let item_div = document.createElement('div');
-                    item_div.className = 'item-product d-flex justify-content-between position-relative';
-                    item_div.id = item.ProductID;
-                    item_div.setAttribute("data-price", item.Price);
-
-                    // create product detail
-                    var p1 = document.createElement('p');
-                    var p2 = document.createElement('p');
-                    p1.innerHTML = item.ProductID;
-                    p1.className = 'text-uppercase fw-bold w-25';
-                    p2.innerHTML = item.ProductName;
-                    p2.className = 'text-end text-break flex-shrink-1';
-
-                    // create edit button
-                    var btn = document.createElement('button');
-                    btn.className = 'btn btn-sm btn-outline-success edit-info position-absolute top-0 end-0';
-                    btn.setAttribute('data-bs-toggle', 'modal');
-                    btn.setAttribute('data-bs-target', '#editModal');
-                    btn.setAttribute('title', 'Edit');
-                    btn.setAttribute('aria-label', 'Edit');
-                    var icon = document.createElement('i');
-                    icon.className = 'fas fa-pen-square';
-                    btn.appendChild(icon);
-
-                    // append product detail to product
-                    item_div.appendChild(p1);
-                    item_div.appendChild(p2);
-                    item_div.appendChild(btn);
-
-                    btn.addEventListener('click', function(event) {
-                        // Get the clicked element and its parent
-                        var clickedElement = event.target;
-                        var parentElement = clickedElement.parentElement;
-                
-                        // If the clicked element is the i element, adjust the parent element
-                        if (clickedElement.tagName === 'I') {
-                            parentElement = parentElement.parentElement;
-                        }
-                
-                        // Get the data from the parent element
-                        var data = parentElement.getAttribute("data-price");
-                
-                        // Set the data in the modal
-                        var modalBody = document.querySelector('#myModal .modal-body');
-                        modalBody.textContent = data;
-                    });
-                    item_group.appendChild(item_div);
+                    sliderSetPrice(item.Price) // set min and max price
+                    itemDiv = addProduct(item) // create product
+                    item_group.appendChild(itemDiv); // append product to group
                 });
                 item_display.appendChild(item_group); // append product to category
             }

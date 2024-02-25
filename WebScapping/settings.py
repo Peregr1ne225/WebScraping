@@ -34,7 +34,7 @@ ALLOWED_HOSTS = ['*']
 CSRF_COOKIE_SECURE = True
 
 # CSRF_COOKIE_HTTPONLY: Determines whether the CSRF cookie should be accessible to JavaScript.
-CSRF_COOKIE_HTTPONLY = False
+CSRF_COOKIE_HTTPONLY = True
 
 # Application definition
 

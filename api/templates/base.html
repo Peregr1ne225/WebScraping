@@ -5,6 +5,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% csrf_token %}
+    <meta name="csrf-token" content="{{ csrf_token }}">
     <link href="https://cdn.jsdelivr.net/npm/nouislider@14.6.3/distribute/nouislider.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
@@ -14,31 +16,71 @@
 <body>
     <!-- Modal -->
     <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
+            <!-- Modal Header -->
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Edit Product Data</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form>
-                    <div class="mb-3">
-                      <label for="recipient-name" class="col-form-label">Recipient:</label>
-                      <input type="text" class="form-control" id="recipient-name">
+                <!-- Modal Body -->
+                <form method="post">
+                    <input type="hidden" id="productId" name="ProductID">
+                    <div class="mb-3 row">
+                        <!-- ProductName -->
+                        <label for="productName" class="col-form-label col-sm-2">Product Name:</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="productName" name="ProductName">
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <!-- Price -->
+                        <label for="productPrice" class="col-form-label col-sm-2 text-end">Price:</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="productPrice" name="Price">
+                        </div>
+                        <!-- Stock -->
+                        <label for="productStock" class="col-form-label col-sm-2 text-end">Stock:</label>
+                        <div class="col-sm-4">
+                            <select type="text" class="form-select" id="productStock" name="Stock">
+                                <option selected disabled value="">Select</option>
+                                <option value="In Stock">In Stock</option>
+                                <option value="Out of Stock">Out of Stock</option>
+                            </select>
+                        </div>
                     </div>
                     <div class="mb-3">
-                      <label for="message-text" class="col-form-label">Message:</label>
-                      <textarea class="form-control" id="message-text"></textarea>
+                        <!-- Description -->
+                        <label for="productDescription" class="col-form-label" name="Description">Descpiption:</label>
+                        <textarea class="form-control" id="productDescription" rows="5"></textarea>
                     </div>
-                  </form>
+                    <div class="mb-3 row">
+                        <!-- URL -->
+                        <label for="productURL" class="col-form-label col-sm-2 text-end">URL:</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="productURL" name="URL">
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <!-- Picture URL -->
+                        <label for="productPicURL" class="col-form-label col-sm-2 text-end">Picture URL:</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="productPicURL" name="PicURL">
+                        </div>
+                    </div>
+                </form>
             </div>
+            <!-- Modal Footer -->
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+                <button type="button" class="btn btn-secondary edit-discard" data-bs-dismiss="modal">Discard</button> <!-- Close Modal-->
+                <button id="submitEditForm" type="button" class="btn btn-primary edit-save">Save changes</button> <!-- Add onclick event to submit form -->
             </div>
         </div>
         </div>
     </div>
+    <!-- End Modal -->
+    <!-- Navbar -->
     <div class="navbar navbar-expand-lg navbar-light bg-light sticky-top" style="z-index: 1030;">
         <div class="container-fluid d-flex justify-content-between">
             <a class="navbar-brand" href="http://127.0.0.1:8000/">Web Scrap</a>
@@ -77,9 +119,13 @@
             </div>
         </div>
     </div>
+    <!-- End Navbar -->
+    <!-- Sidebar and Main Content -->
     <div class="container-fluid">
         <div class="row">
+            <!-- Sidebar -->
             <div class="col-md-2 sidebar vh-auto md-vh-100 sticky-top" style="top: 72px;">
+                <!-- Add Category from javaScript-->
                 <p> Category </p>
                 <div id="dynamicCate" class="list-group list-group-flush list-of-cate">
                     <div class="list-group-item d-flex align-items-center justify-content-between list-of-cate">
@@ -101,13 +147,14 @@
                         </div>
                     </div>
                 </div>
+                <!-- Add Brand from javaScript-->
                 <p> Brands </p>
                 <div id="dynamicBrand" class="list-group list-group-flush list-of-brand">
                     {% block brand %}
                 
                     {% endblock brand %}
                 </div>
-                
+                <!-- Price Slider -->
                 <div class="price-min-max d-flex align-items-center justify-content-between">
                     <p>Min value: <span id="min-value"></span></p>
                     <p>Max value: <span id="max-value"></span></p>
@@ -115,6 +162,8 @@
                 
                 <div id="price-slider"></div>
             </div>
+            <!-- End Sidebar -->
+            <!-- Main Content -->
             <div class="col-md-10 p-3 main-item">
                 <div id="loadingScreen" style="position: fixed; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 9999;">
                     <p>Loading...</p>
@@ -125,11 +174,14 @@
                 {% endblock content %}
                 </div>
             </div>
+            <!-- End Main Content -->
         </div>
     </div>
+    <!-- End Sidebar and Main Content -->
     <script src="https://cdn.jsdelivr.net/npm/nouislider@14.6.3/distribute/nouislider.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script>
+        // load Category from API
         window.onload = function() {
             let url = new URL(window.location.href);
             if (url.pathname && url.pathname !== "/") {
@@ -149,23 +201,9 @@
                 console.log(error);
             }
         }
-        function getCookie(name) {
-            let cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                const cookies = document.cookie.split(';');
-                for (let i = 0; i < cookies.length; i++) {
-                    const cookie = cookies[i].trim();
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
-                }
-            }
-            return cookieValue;
-        }
-
+        // Increase Category Score
         function cateIncrease(path){
-            const csrftoken = getCookie('csrftoken');
+            let csrftoken = document.querySelector('[name=csrf-token]').content;
             path_part = path.split('/');
             cate_id = path_part[1];
             let url = "http://127.0.0.1:8000/api/category_root/?id=" + cate_id;
@@ -192,9 +230,9 @@
                 });
             })
         }
-
+        // Increase Brand Score
         function brandIncrease(brand){
-            const csrftoken = getCookie('csrftoken');
+            let csrftoken = document.querySelector('[name=csrf-token]').content;
             url = "http://127.0.0.1:8000/api/brand/" + brand + "/";
             let patchDataBrand = {
                 "BrandScore": 1
@@ -216,11 +254,11 @@
             });
             
         }
-
+        // Get URL for category
         function getUrl(id) {
             return `{% url 'cate' id=123 %}`.replace('123', id);
         }
-
+        // Nested Loop for Category
         function nestedLoop(data, parentElement) {
             for (let i = 0; i < data.length; i++) {
                 // Create the main list group item
@@ -262,6 +300,7 @@
         }
     </script>
     <script>
+        // Add Expan Colllaspe Button
         function toggleIcon(buttonId) {
             var button = document.getElementById(buttonId);
             var icon = button.querySelector("i")
@@ -275,6 +314,7 @@
         }
     </script>
     <script>
+        // Price Slider
         var slider = document.getElementById('price-slider');
         noUiSlider.create(slider, {
             start: [0, 100],
@@ -285,6 +325,7 @@
             },
             step: 1
         });
+        // Change Slider Value
         slider.noUiSlider.on('update', function (values, handle) {
             if (handle) {
                 document.getElementById('max-value').innerHTML = values[handle];
@@ -292,33 +333,23 @@
                 document.getElementById('min-value').innerHTML = values[handle];
             }
         });
+        // Change Item Range
         slider.noUiSlider.on('change.one', function (values, handle) {
             let items_div = document.querySelectorAll('div[data-price]');
             items_div.forEach(item_price => {
                 let price = Number(item_price.dataset.price);
-                if(handle == 0) {
-                    if (price < values[handle]) {
-                        item_price.classList.remove('d-flex');
-                        item_price.classList.add('d-none');  
-                    }
-                    else {
-                        item_price.classList.remove('d-none');
-                        item_price.classList.add('d-flex');
-                    }
+                if(price >= values[0] && price <= values[1]) {
+                    item_price.classList.remove('d-none');
+                    item_price.classList.add('d-flex');
                 }
                 else {
-                    if (price > values[handle]) {
-                        item_price.classList.remove('d-flex');
-                        item_price.classList.add('d-none');                        
-                    }
-                    else {
-                        item_price.classList.remove('d-none');
-                        item_price.classList.add('d-flex');
-                    }
+                    item_price.classList.remove('d-flex');
+                    item_price.classList.add('d-none');
                 }
                 addDNoneToItemGroup();
             });
         });
+        // Group hidden
         function addDNoneToItemGroup() {
             let itemGroups = document.querySelectorAll(".item-group");
             itemGroups.forEach(itemGroup => {
@@ -339,6 +370,7 @@
         }
     </script>
     <script>
+        // Add Top Brand from API
         window.addEventListener("load", function(){
             try{
                 fetch("http://127.0.0.1:8000/api/brand_top/")
@@ -350,6 +382,7 @@
                 console.log(error);
             }
         })
+        // Add Brand to Navbar
         function brandtoNav(data, parentElement) {
             let currentUrl = new URL(window.location.href);
             currentUrl = currentUrl.origin + currentUrl.pathname;
@@ -363,6 +396,7 @@
         }
     </script>
     <script>
+        // Add Top Category from API
         window.addEventListener("load", function(){
             try{
                 fetch("http://127.0.0.1:8000/api/category_top/")
@@ -374,6 +408,7 @@
                 console.log(error);
             }
         })
+        // Add Category to Navbar
         function catetoNav(data, parentElement) {
             let currentUrl = new URL(window.location.href);
             for (let i = 0; i < 5; i++) {
@@ -385,9 +420,98 @@
             }
         }
     </script>
+    <script>
+        // Add Product to Display
+        function addProduct(data) {
+            // Create a new div for each item
+            let item_div = document.createElement('div');
+            item_div.className = 'item-product d-flex flex-column position-relative';
+            item_div.id = data.ProductID;
+            item_div.setAttribute("data-price", data.Price);
+            item_div.setAttribute("data-score", data.SimilarScore);
+            item_div.setAttribute("data-group", data.SimilarGroup);
+            
+            // Create a new paragraph for each property
+            var p1 = document.createElement('p'); // pic
+            var p2 = document.createElement('p'); // link
+            var p3 = document.createElement('p'); // id
+            var p4 = document.createElement('p'); // retailer
+            var p5 = document.createElement('p'); // product name
+            var p6 = document.createElement('p'); // brand
+            var p7 = document.createElement('a'); // description
+            var p8 = document.createElement('a'); // stock
+            var p9 = document.createElement('a'); // price
+            
+            // Set the innerHTML of the div
+            p1.innerHTML = `URL: ${data.URL}`;
+            p2.innerHTML = `Picture: ${data.PicURL}`;
+            p3.innerHTML = `ID: ${data.ProductID}`;
+            p3.className = 'text-uppercase fw-bold w-25';
+            p4.innerHTML = `Retailer: ${data.RetailName}`;
+            p5.innerHTML = `Product Name : ${data.ProductName}`;
+            p5.className = 'text-break flex-shrink-1';
+            p6.innerHTML = `Brand: ${data.BrandName}`;            
+            p7.innerHTML = `Descpiption: ${data.Description}`;
+            p8.innerHTML = `Stock: ${data.Stock}`;
+            p9.innerHTML = `Price: ${data.Price}`;
+            
+            
+            // Create a new button
+            var btn = document.createElement('button');
+            btn.className = 'btn btn-sm btn-outline-success edit-info position-absolute top-0 end-0';
+            btn.setAttribute('data-bs-toggle', 'modal');
+            btn.setAttribute('data-bs-target', '#editModal');
+            btn.setAttribute('title', 'Edit');
+            btn.setAttribute('aria-label', 'Edit');
+            var icon = document.createElement('i');
+            icon.className = 'fas fa-pen-square';
+            btn.appendChild(icon);
+            
+            // Append the div to the list
+            item_div.appendChild(p3);
+            item_div.appendChild(p1);
+            item_div.appendChild(p2);
+            item_div.appendChild(p4);
+            item_div.appendChild(p5);
+            item_div.appendChild(p6);
+            item_div.appendChild(p7);
+            item_div.appendChild(p8);
+            item_div.appendChild(p9);
+            item_div.appendChild(btn);
+            
+            return item_div;
+        }
+    </script>
+    <script>
+        //Set Value for Price Slider
+        let minPrice = 0;
+        let maxPrice = 0;
+            
+        function sliderSetPrice(price) {
+            if(minPrice == 0 || minPrice > price || maxPrice == 0 || maxPrice < price) {
+                if(minPrice == 0 || minPrice > price) minPrice = price;
+                if(maxPrice == 0 || maxPrice < price) maxPrice = price;
+            
+                minPrice = parseFloat(minPrice);
+                maxPrice = parseFloat(maxPrice);
+                if (minPrice == maxPrice) {
+                    // If they are, adjust maxPrice slightly
+                    maxPrice += 0.01;
+                }
+                slider.noUiSlider.updateOptions({
+                    start: [minPrice, maxPrice],
+                    range: {
+                        'min': minPrice,
+                        'max': maxPrice
+                    }
+                });
+            }
+        }
+    </script>
     {% block script %}
     {% endblock script %}
     <script>
+        // Edit Modal
         btn = document.querySelector('#editModal');
         btn.addEventListener('show.bs.modal', function(event) {
             // Get the clicked element and its parent
@@ -395,14 +519,34 @@
             var parentElement = clickedElement.parentElement;
             
             // Get the data from the parent element
-            var data = parentElement.getAttribute("data-price");
+            var productId = parentElement.id;
+            var productName = parentElement.children[1].textContent;
+            var productPrice = parentElement.getAttribute("data-price");
+            var productDescription = "";
+            var productURL = "";
+            var productPicURL = "";
+            console.log(productId);
+            
+            // Get the modal elements
+            var modalTitle = document.querySelector('.modal-title')
+            var modalBodyId = document.querySelector('.modal-body #productId')
+            var modalBodyName = document.querySelector('.modal-body #productName')
+            var modalBodyPrice = document.querySelector('.modal-body #productPrice')
+            var modalBodyDescription = document.querySelector('.modal-body #productDescription')
+            var modalBodyURL = document.querySelector('.modal-body #productURL')
+            var modalBodyPicURL = document.querySelector('.modal-body #productPicURL')
             
             // Set the data in the modal
-            var modalTitle = document.querySelector('.modal-title')
-            var modalBodyInput = document.querySelector('.modal-body input')
-            modalTitle.textContent = "Edit Product";
-            modalBodyInput.value = data;
+            modalTitle.textContent = "Edit Product: " + productId;
+            modalBodyId.value = productId;
+            modalBodyName.value = productName;
+            modalBodyPrice.value = productPrice;
+            modalBodyStock.value = productStock;
+            modalBodyDescription.value = productDescription;
+            modalBodyURL.value = productURL;
+            modalBodyPicURL.value = productPicURL;
         });
     </script>
+
 </body>
 </html>

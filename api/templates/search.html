@@ -30,16 +30,16 @@
         let maxPrice = 0;
         let brandParent = document.getElementById('dynamicBrand');
         let item_display = document.getElementById('product-display');
-        for (let i = 0; i < data.length; i++) {
-            let brand = data[i].BrandID;
-            let price = data[i].price;
+        for (let item = 0; item < data.length; item++) {
+            let brand = data[item].BrandID;
+            let price = data[item].price;
             if (!brandExist.includes(brand)) {
-                brandExist.push(data[i].BrandID)
-                createBrand(data[i].BrandID, data[i].BrandName, brandParent, currentUrl);
+                brandExist.push(data[item].BrandID)
+                createBrand(data[item].BrandID, data[item].BrandName, brandParent, currentUrl);
             }
-            if(minPrice == 0 || minPrice > data[i].Price || maxPrice == 0 || maxPrice < data[i].Price) {
-                if(minPrice == 0 || minPrice > data[i].Price) minPrice = data[i].Price;
-                if(maxPrice == 0 || maxPrice < data[i].Price) maxPrice = data[i].Price;
+            if(minPrice == 0 || minPrice > data[item].Price || maxPrice == 0 || maxPrice < data[item].Price) {
+                if(minPrice == 0 || minPrice > data[item].Price) minPrice = data[item].Price;
+                if(maxPrice == 0 || maxPrice < data[item].Price) maxPrice = data[item].Price;
             
                 minPrice = parseFloat(minPrice);
                 maxPrice = parseFloat(maxPrice);
@@ -55,36 +55,8 @@
                     }
                 });
             }
-            // Create a new div for each item
-            let i_div = document.createElement('div');
-            i_div.className = 'item-product d-flex justify-content-between position-relative';
-            i_div.id = data[i].ProductID;
-            i_div.setAttribute("data-price", data[i].Price);
-
-            // create product detail
-            var p1 = document.createElement('p');
-            var p2 = document.createElement('p');
-            p1.innerHTML = data[i].ProductID;
-            p1.className = 'text-uppercase fw-bold w-25';
-            p2.innerHTML = data[i].ProductName;
-            p2.className = 'text-end text-break flex-shrink-1';
-
-            // Create a new button
-            var btn = document.createElement('button');
-            btn.className = 'btn btn-sm btn-outline-success edit-info position-absolute top-0 end-0';
-            btn.setAttribute('data-bs-toggle', 'modal');
-            btn.setAttribute('data-bs-target', '#editModal');
-            btn.setAttribute('title', 'Edit');
-            btn.setAttribute('aria-label', 'Edit');
-            var icon = document.createElement('i');
-            icon.className = 'fas fa-pen-square';
-            btn.appendChild(icon);
-            
-            // Append the div to the list
-            i_div.appendChild(p1);
-            i_div.appendChild(p2);
-            i_div.appendChild(btn);
-            item_display.appendChild(i_div);
+            itemDiv = addProduct(data[item])
+            item_display.appendChild(itemDiv);
         }
     });
     function createBrand(brandID, brandName, brandParent, currentUrl){
