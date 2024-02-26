@@ -108,7 +108,7 @@ def get_brand(link, path, brand, link_brand):
 def get_item(soup, path, brand):
     list_menu = []
     for item in soup.find_all("div", {"class":"reladiv"}): #item
-        product_code = "j" + item.find("div", {"class":"buy_promo"}).get("data-id") #code
+        product_code = "J" + item.find("div", {"class":"buy_promo"}).get("data-id") #code
         product_name = item.find("span", {"class":"promo_name"}).text #name
         url = item.find("div", {"class":"size_img"}).find("a").get("href")
         

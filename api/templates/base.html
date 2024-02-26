@@ -596,7 +596,9 @@
         let isSwitchingModals = false;
         let editBtn = document.querySelector('#editModal');
         editBtn.addEventListener('show.bs.modal', onShow);
+        // Hide edit modal for confirm modal then reassigned edit modal
         editBtn.addEventListener('hidden.bs.modal', function(event) {
+            //check if go edit
             if (isSwitchingModals) {
                 isSwitchingModals = false;
                 return;
@@ -609,7 +611,7 @@
         // Confirm Modal
         let conBtn = document.querySelector('#confirmModal');
         conBtn.addEventListener('show.bs.modal', function(event) {
-            isSwitchingModals = true;
+            isSwitchingModals = true; // Set the flag to true
             editBtn.removeEventListener('show.bs.modal', onShow);
             let productId = document.querySelector('#productId').value;
             let productName = document.querySelector('#productName').value;
@@ -633,6 +635,7 @@
                 <p class="text-break"><strong>Picture URL:</strong> ${productPicURL}</p>
             `;
         });
+        // Hide confirm modal reassigned edit modal
         conBtn.addEventListener('hidden.bs.modal', function(event) {
             isSwitchingModals = false;
             editBtn.addEventListener('show.bs.modal', onShow);
