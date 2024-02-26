@@ -149,7 +149,6 @@ def add_newdata(list_item):
     if old_stock != list_item[2]:
         product.Stock = list_item[2]
         product.save()
-        create_log(product, "Stock", old_stock, list_item[2])
 
 def create_log(id, attrib, old, new):
     new_log = Logs.objects.create(

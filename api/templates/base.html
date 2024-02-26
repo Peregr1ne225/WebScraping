@@ -466,7 +466,7 @@
             //Last Edited + Update Button
             let p10 = document.createElement('p'); // date edit
             let divUpdate = document.createElement('div');
-            divUpdate.className = 'd-flex align-items-center justify-content-start';
+            divUpdate.className = 'edit-update d-flex align-items-center justify-content-start';
             
             let updateButton = document.createElement('button');
             updateButton.className = "btn btn-outline-success update-info";
@@ -483,22 +483,23 @@
             // Add event listener for update
             
             updateButton.addEventListener('click', function() {
-                document.getElementById("loadingScreen").style.display = "none";
-                
+                document.getElementById("loadingScreen").style.display = "block";
+                console.log("Wait")
                 let productId = this.parentElement.parentElement.id;
-                let url = `http://127.0.0.1:8000/api/update_product/${productId}`;
+                let url = `http://127.0.0.1:8000/api/update/${productId}/`;
                 try {
                     fetch(url)
                     .then(response => response.json())
                     .then(data => {
                         console.log(data);
                         setNewData(data);
+                        document.getElementById("loadingScreen").style.display = "none";
+                        console.log("Done")
                     })
                 } catch (error) {
                     console.log(error);
                 }
-
-                document.getElementById("loadingScreen").style.display = "block";
+                
             });
             divUpdate.appendChild(updateButton);
 
@@ -719,11 +720,13 @@
             productDiv.children[4].textContent = `Product Name : ${data.ProductName}`;
             productDiv.children[7].textContent = `Stock: ${data.Stock}`;
             productDiv.children[8].textContent = `Price: ${data.Price}`;
-            productDiv.children[9].textContent = `Last Edited: ${data.DateEdit}`;
 
             productDiv.dataset.price = data.Price;
             productDiv.dataset.score = data.SimilarScore;
             productDiv.dataset.group = data.SimilarGroup;
+
+            let productEdit = productDiv.querySelector('.edit-update p');
+            productEdit.textContent = `Last Edited: ${data.DateEdit}`;
             
             if(document.getElementsByClassName('item-group').length > 0)
                 changeGroup(data.ProductID, data.SimilarGroup);

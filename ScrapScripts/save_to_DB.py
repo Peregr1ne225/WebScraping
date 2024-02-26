@@ -116,7 +116,6 @@ def check_update(product):
         Products.objects.filter(URL = product[2]).update(Stock = product[5])
         update_product = Products.objects.get(URL = product[2])
         print(f"Old Data: {old_product.Stock}, New Data: {update_product.Stock}")
-        create_log(update_product, "Stock", old_product.Stock, update_product.Stock)
     
     #Update PicURL
     if old_product.PicURL != product[6]:
