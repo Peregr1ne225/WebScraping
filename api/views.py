@@ -4,6 +4,8 @@ from .addlog import add_log
 from .update_item import update
 # Create your views here.
 #from django.http import HttpResponse
+from urllib.parse import urljoin
+from django.urls import reverse
 from .models import *
 from .serializers import *
 from rest_framework import permissions, viewsets
@@ -230,3 +232,7 @@ def cate(request, id):
         url = data['next'] if 'next' in data else None
 
     return render(request, template, {'data': json.dumps(results)})
+
+def dash_board(request):
+    url = "http://127.0.0.1:8000"
+    return render(request, 'dashboard.html')
