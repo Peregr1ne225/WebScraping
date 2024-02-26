@@ -9,7 +9,8 @@
     <meta name="csrf-token" content="{{ csrf_token }}">
     <link href="https://cdn.jsdelivr.net/npm/nouislider@14.6.3/distribute/nouislider.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script src="https://kit.fontawesome.com/6d6cc9793e.js" crossorigin="anonymous"></script>
+    {% comment %} <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"> {% endcomment %}
     <link rel="stylesheet" href="{% static 'styles.css' %}">
     <title>{% block title %}{% endblock title%}</title>
 </head>
@@ -54,20 +55,6 @@
                         <!-- Description -->
                         <label for="productDescription" class="col-form-label">Description:</label>
                         <textarea name="Description" class="form-control" id="productDescription" rows="5"></textarea>
-                    </div>
-                    <div class="mb-3 row">
-                        <!-- URL -->
-                        <label for="productURL" class="col-form-label col-sm-2 text-end">URL:</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" id="productURL" name="URL">
-                        </div>
-                    </div>
-                    <div class="mb-3 row">
-                        <!-- Picture URL -->
-                        <label for="productPicURL" class="col-form-label col-sm-2 text-end">Picture URL:</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" id="productPicURL" name="PicURL">
-                        </div>
                     </div>
                 </form>
             </div>
@@ -132,7 +119,7 @@
                     <div class="col-md-2">
                         <form class="search-container" action="{{ request.path }}" method="get">
                             <input name="search" class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                            <button class="btn btn-outline-success" type="submit"><i class="fas fa-search"></i></button>
+                            <button class="btn btn-outline-success" type="submit"><i class="fa-solid fa-search"></i></button>
                         </form>
                     </div>
                     <div class="col-md-5">
@@ -334,7 +321,7 @@
         }
     </script>
     <script>
-        // Add Expan Colllaspe Button
+        // Add Expand Colllaspe Button
         function toggleIcon(buttonId) {
             let button = document.getElementById(buttonId);
             let icon = button.querySelector("i")
@@ -464,7 +451,7 @@
             item_div.setAttribute("data-price", data.Price);
             item_div.setAttribute("data-score", data.SimilarScore);
             item_div.setAttribute("data-group", data.SimilarGroup);
-            
+
             // Create a new paragraph for each property
             let p1 = document.createElement('p'); // pic
             let p2 = document.createElement('p'); // link
@@ -475,8 +462,28 @@
             let p7 = document.createElement('p'); // description
             let p8 = document.createElement('p'); // stock
             let p9 = document.createElement('p'); // price
-            let p10 = document.createElement('p'); // score
+
+            //Last Edited + Update Button
+            let p10 = document.createElement('p'); // date edit
+            let divUpdate = document.createElement('div');
+            divUpdate.className = 'd-flex align-items-center justify-content-start';
             
+            let updateButton = document.createElement('button');
+            updateButton.className = "btn btn-outline-success update-info";
+            updateButton.id = `update-${data.ProductID}`;
+            updateButton.setAttribute("onclick", "updateItem(this.id)");
+            updateButton.setAttribute("aria-label", "Update");
+            updateButton.style.width = '35px';  // Set the width of the button
+            updateButton.style.height = '35px';  // Set the height of the button
+            updateButton.style.display = 'flex';  // Use flexbox for layout
+            updateButton.style.justifyContent = 'center';  // Center the icon horizontally
+            updateButton.style.alignItems = 'center';  // Center the icon vertically
+            
+            let update_icon = document.createElement('i');
+            update_icon.className = "fa-solid fa-rotate fa-lg";
+            updateButton.appendChild(update_icon);
+            divUpdate.appendChild(updateButton);
+
             // Set the innerHTML of the div
             p1.innerHTML = `URL: ${data.URL}`;
             p2.innerHTML = `Picture: ${data.PicURL}`;
@@ -490,7 +497,7 @@
             p8.innerHTML = `Stock: ${data.Stock}`;
             p9.innerHTML = `Price: ${data.Price}`;
             p10.innerHTML = `Last Edited: ${data.DateEdit}`;
-            
+            divUpdate.appendChild(p10)
             
             // Create a new button
             let btn = document.createElement('button');
@@ -499,13 +506,13 @@
             btn.setAttribute('data-bs-target', '#editModal');
             btn.setAttribute('title', 'Edit');
             btn.setAttribute('aria-label', 'Edit');
-            btn.style.width = '35px';  // Set the width of the button
-            btn.style.height = '35px';  // Set the height of the button
+            btn.style.width = '30px';  // Set the width of the button
+            btn.style.height = '30px';  // Set the height of the button
             btn.style.display = 'flex';  // Use flexbox for layout
             btn.style.justifyContent = 'center';  // Center the icon horizontally
             btn.style.alignItems = 'center';  // Center the icon vertically
             let icon = document.createElement('i');
-            icon.className = 'fas fa-pen-square fa-2x';
+            icon.className = "fa-regular fa-pen-to-square fa-2x";
             btn.appendChild(icon);
             
             // Append the div to the list
@@ -518,7 +525,7 @@
             item_div.appendChild(p7);
             item_div.appendChild(p8);
             item_div.appendChild(p9);
-            item_div.appendChild(p10);
+            item_div.appendChild(divUpdate);
             item_div.appendChild(btn);
             
             return item_div;
@@ -562,26 +569,20 @@
             // Get the data from the parent element
             let nameText = parentElement.children[4].textContent;
             let priceText = parentElement.children[8].textContent;
-            let descriptionText = parentElement.children[6].textContent;
-            let urlText = parentElement.children[1].textContent;
-            let picURLText = parentElement.children[2].textContent;
+            let descriptionText = parentElement.children[6].textContent;            
 
             // Set data for the modal
             let productId = parentElement.id;
             let productName = nameText.substring(nameText.indexOf(':') + 1).trim();
             let productPrice = priceText.substring(priceText.indexOf(':') + 1).trim();
             let productDescription = descriptionText.substring(descriptionText.indexOf(':') + 1).trim();
-            let productURL = urlText.substring(urlText.indexOf(':') + 1).trim();
-            let productPicURL = picURLText.substring(picURLText.indexOf(':') + 1).trim();
-            
+
             // Get the modal elements
             let modalTitle = document.querySelector('#editModal .modal-title')
             let modalBodyId = document.querySelector('#editModal .modal-body #productId')
             let modalBodyName = document.querySelector('#editModal .modal-body #productName')
             let modalBodyPrice = document.querySelector('#editModal .modal-body #productPrice')
             let modalBodyDescription = document.querySelector('#editModal .modal-body #productDescription')
-            let modalBodyURL = document.querySelector('#editModal .modal-body #productURL')
-            let modalBodyPicURL = document.querySelector('#editModal .modal-body #productPicURL')
             
             // Set the data in the modal
             modalTitle.textContent = "Edit Product: " + productId;
@@ -589,8 +590,6 @@
             modalBodyName.value = productName;
             modalBodyPrice.value = productPrice;
             modalBodyDescription.value = productDescription;
-            modalBodyURL.value = productURL;
-            modalBodyPicURL.value = productPicURL;
         }
         // Switching Modals
         let isSwitchingModals = false;
@@ -622,8 +621,6 @@
             }
             
             let productDescription = document.querySelector('#productDescription').value;
-            let productURL = document.querySelector('#productURL').value;
-            let productPicURL = document.querySelector('#productPicURL').value;
             let modalBody = document.querySelector('#confirmModal .modal-body');
             modalBody.innerHTML = `
                 <p class="text-break"><strong>Product ID:</strong> ${productId}</p>
@@ -631,8 +628,6 @@
                 <p class="text-break"><strong>Price:</strong> ${productPrice}</p>
                 <p class="text-break"><strong>Stock:</strong> ${productStock}</p>
                 <p class="text-break"><strong>Description:</strong> ${productDescription}</p>
-                <p class="text-break"><strong>URL:</strong> ${productURL}</p>
-                <p class="text-break"><strong>Picture URL:</strong> ${productPicURL}</p>
             `;
         });
         // Hide confirm modal reassigned edit modal
