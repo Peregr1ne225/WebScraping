@@ -716,10 +716,7 @@
         function setNewData(data) {
             let productDiv = document.getElementById(data.ProductID);
 
-            productDiv.children[1].textContent = `URL: ${data.URL}`;
-            productDiv.children[2].textContent = `Picture: ${data.PicURL}`;
             productDiv.children[4].textContent = `Product Name : ${data.ProductName}`;
-            productDiv.children[6].textContent = `Descpiption: ${data.Description}`;
             productDiv.children[7].textContent = `Stock: ${data.Stock}`;
             productDiv.children[8].textContent = `Price: ${data.Price}`;
             productDiv.children[9].textContent = `Last Edited: ${data.DateEdit}`;

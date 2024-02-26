@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from .savenewscore import check_update
 from .addlog import add_log
-from ScrapScripts.update_item import update
+from .update_item import update
 # Create your views here.
 #from django.http import HttpResponse
 from .models import *
@@ -168,6 +168,7 @@ class UpdateViewset(viewsets.ModelViewSet):
 
     def retrieve(self, request, *args, **kwargs):
         id=kwargs.get('pk')
+        update(id)
         response = super().retrieve(request, *args, **kwargs)
     
         return response
