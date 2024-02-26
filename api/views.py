@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from .savenewscore import check_update
-
+from .addlog import add_log
+from ScrapScripts.update_item import update
 # Create your views here.
 #from django.http import HttpResponse
 from .models import *
@@ -11,7 +12,7 @@ from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication
 import requests
 import json
-from .addlog import add_log
+
 
 class NoLimitPagination(pagination.PageNumberPagination):
     page_size = None
@@ -159,6 +160,17 @@ class LogViewset(viewsets.ModelViewSet):
     queryset = Logs.objects.all()
     serializer_class = LogSerializer
     #permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+class UpdateViewset(viewsets.ModelViewSet):
+    queryset = Products.objects.all()
+    serializer_class = ProductSerializer
+    #permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def retrieve(self, request, *args, **kwargs):
+        id=kwargs.get('pk')
+        response = super().retrieve(request, *args, **kwargs)
+    
+        return response
 
 def get_descendant_category_ids(CategoryID):
     descendant_ids = set()

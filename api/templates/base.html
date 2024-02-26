@@ -470,8 +470,6 @@
             
             let updateButton = document.createElement('button');
             updateButton.className = "btn btn-outline-success update-info";
-            updateButton.id = `update-${data.ProductID}`;
-            updateButton.setAttribute("onclick", "updateItem(this.id)");
             updateButton.setAttribute("aria-label", "Update");
             updateButton.style.width = '35px';  // Set the width of the button
             updateButton.style.height = '35px';  // Set the height of the button
@@ -482,6 +480,26 @@
             let update_icon = document.createElement('i');
             update_icon.className = "fa-solid fa-rotate fa-lg";
             updateButton.appendChild(update_icon);
+            // Add event listener for update
+            
+            updateButton.addEventListener('click', function() {
+                document.getElementById("loadingScreen").style.display = "none";
+                
+                let productId = this.parentElement.parentElement.id;
+                let url = `http://127.0.0.1:8000/api/update_product/${productId}`;
+                try {
+                    fetch(url)
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data);
+                        setNewData(data);
+                    })
+                } catch (error) {
+                    console.log(error);
+                }
+
+                document.getElementById("loadingScreen").style.display = "block";
+            });
             divUpdate.appendChild(updateButton);
 
             // Set the innerHTML of the div

@@ -14,6 +14,7 @@ router.register(r'brand_top', views.BrandTopViewset)
 router.register(r'category_top', views.CategoryTopViewset)
 router.register(r'category_parent', views.CategoryParentViewset)
 router.register(r'category_root', views.CategoryRootViewset)
+router.register(r'update_product', views.UpdateViewset)
 
 urlpatterns = [
     path('api/', include(router.urls)),
