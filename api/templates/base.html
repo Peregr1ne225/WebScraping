@@ -592,7 +592,7 @@
             modalBodyURL.value = productURL;
             modalBodyPicURL.value = productPicURL;
         }
-
+        // Switching Modals
         let isSwitchingModals = false;
         let editBtn = document.querySelector('#editModal');
         editBtn.addEventListener('show.bs.modal', onShow);
@@ -606,7 +606,7 @@
             form.reset();
             editBtn.addEventListener('show.bs.modal', onShow);
         });
-
+        // Confirm Modal
         let conBtn = document.querySelector('#confirmModal');
         conBtn.addEventListener('show.bs.modal', function(event) {
             isSwitchingModals = true;
@@ -632,6 +632,10 @@
                 <p class="text-break"><strong>URL:</strong> ${productURL}</p>
                 <p class="text-break"><strong>Picture URL:</strong> ${productPicURL}</p>
             `;
+        });
+        conBtn.addEventListener('hidden.bs.modal', function(event) {
+            isSwitchingModals = false;
+            editBtn.addEventListener('show.bs.modal', onShow);
         });
     </script>
     <script>
