@@ -651,7 +651,6 @@
             let csrftoken = document.querySelector('[name=csrf-token]').content;
             let formSend = new FormData(modalForm);
             let productId = formSend.get('ProductID');
-            console.log(formSend.get('Description'));
             let object = {};
             formSend.forEach((value, key) => {object[key] = value});
             let json = JSON.stringify(object);
@@ -709,7 +708,8 @@
             productDiv.dataset.score = data.SimilarScore;
             productDiv.dataset.group = data.SimilarGroup;
             
-            changeGroup(data.ProductID, data.SimilarGroup);
+            if(document.getElementsByClassName('item-group').length > 0)
+                changeGroup(data.ProductID, data.SimilarGroup);
         }
     </script>
 </body>

@@ -13,7 +13,7 @@ def add_log(id, field, value):
     old_value = getattr(old_data, field)
     if old_value != value:
         new_log = Logs.objects.create(
-            ProductID = id,
+            ProductID = old_data,  # Pass the Products instance instead of just the id
             EditBy = "User",
             EditAttrib = field,
             OldData = old_value,
