@@ -38,6 +38,7 @@ class CategorySerializer(serializers.ModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
     BrandName = serializers.SlugRelatedField(source='BrandID', read_only=True, slug_field='BrandName')
     RetailName = serializers.SlugRelatedField(source='RetailID', read_only=True, slug_field='Retail')
+    Price = serializers.FloatField()
     class Meta:
         model = Products
         fields = ('ProductID', 'ProductName', 'BrandID', 'BrandName',

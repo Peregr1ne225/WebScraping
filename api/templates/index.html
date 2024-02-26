@@ -67,6 +67,7 @@
             var item_display = document.getElementById('product-display');
             var item_group = document.createElement('div');
             item_group.className = 'item-group border border-primary';
+            item_group.id = `group-${group}`;
             try{
                 let response = await fetch('http://127.0.0.1:8000/api/product/?group='+group);
                 let product = await response.json();
@@ -82,5 +83,21 @@
             }
         }
     });
+</script>
+<script>
+    function changeGroup(id, group){
+        let existGroup = document.getElementById(`group-${group}`);
+        let item_id = document.getElementById(id);
+        if (existGroup) {
+            existGroup.appendChild(item_id);
+        }
+        else {
+            let item_display = document.getElementById('product-display');
+            let item_group = document.createElement('div');
+            item_group.className = 'item-group border border-primary';
+            item_group.id = `group-${group}`;
+            item_display.appendChild(item_group);
+        }
+    }
 </script>
 {% endblock script %}

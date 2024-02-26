@@ -119,6 +119,10 @@ a#dropdownAdminButton{
     user-select: none;
 }
 
+.no-select{
+    user-select: none;
+}
+
 #admin-dropdown{
     background-color: #72d4ec;
     max-width: 200px;

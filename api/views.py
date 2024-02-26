@@ -50,18 +50,25 @@ class ProductViewset(viewsets.ModelViewSet):
         try:
             instance = self.get_object()
             for field, value in request.data.items():
+                if field == 'BrandID':
+                    value = Brands.objects.get(BrandID=value)
+                if field == 'RetailID':
+                    value = Retailers.objects.get(RetailID=value)
+                if field == 'CategoryID':
+                    value = Categories.objects.get(CategoryID=value)
                 setattr(instance, field, value)
-            
-            if 'ProductName' in request.data and 'ProductID' in request.data:
-                sim_group = check_update(instance.ProductID, request.data['ProductName'])
+            if ('ProductName' in request.data) and ('ProductID' in request.data):
+                sim_group, sim_score = check_update(instance.ProductID, request.data['ProductName'])
+                print("sim_group: ", sim_group, "sim_score: ", sim_score)
                 if sim_group is not None:
                     instance.SimilarGroup = sim_group
+                    instance.SimilarScore = sim_score
             instance.save()
             serializer = self.get_serializer(instance)
             return Response(serializer.data, status=status.HTTP_200_OK)
         
         except Exception as e:
-            raise exceptions.APIException(str(e))
+            return Response({'detail': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
 class BrandViewset(viewsets.ModelViewSet):
     queryset = Brands.objects.all()

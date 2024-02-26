@@ -52,8 +52,8 @@
                     </div>
                     <div class="mb-3">
                         <!-- Description -->
-                        <label for="productDescription" class="col-form-label" name="Description">Descpiption:</label>
-                        <textarea class="form-control" id="productDescription" rows="5"></textarea>
+                        <label for="productDescription" class="col-form-label">Description:</label>
+                        <textarea name="Description" class="form-control" id="productDescription" rows="5"></textarea>
                     </div>
                     <div class="mb-3 row">
                         <!-- URL -->
@@ -92,8 +92,8 @@
 
             </div>
             <div class="modal-footer">
-                <button id="backToEdit" type="button" class="btn btn-primary" data-bs-target="#editModal" data-bs-toggle="modal" data-bs-dismiss="modal">Cancel</button>
-                <button id="submitEditForm" type="button" class="btn btn-primary" data-bs-dismiss="modal">Confirm</button>
+                <button id="backToEdit" type="button" class="btn btn-warning" data-bs-target="#editModal" data-bs-toggle="modal" data-bs-dismiss="modal">Cancel</button>
+                <button id="submitEditForm" type="button" class="btn btn-success" data-bs-dismiss="modal">Confirm</button>
             </div>
         </div>
         </div>
@@ -104,10 +104,10 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="responseEdit">Response</h5>
+                <h5 class="modal-title">Response</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body text-break flex-shrink-1">
                 Hide this modal and show the first with the button below.
             </div>
             </div>
@@ -189,12 +189,12 @@
                     {% endblock brand %}
                 </div>
                 <!-- Price Slider -->
-                <div class="price-min-max d-flex align-items-center justify-content-between">
-                    <p>Min value: <span id="min-value"></span></p>
-                    <p>Max value: <span id="max-value"></span></p>
+                <div class="price-min-max d-flex align-items-center justify-content-between no-select">
+                    <p class="no-select"> Min value: <span id="min-value"></span></p>
+                    <p class="no-select"> Max value: <span id="max-value"></span></p>
                 </div>
                 
-                <div id="price-slider"></div>
+                <div id="price-slider" class="no-select"></div>
             </div>
             <!-- End Sidebar -->
             <!-- Main Content -->
@@ -472,9 +472,10 @@
             let p4 = document.createElement('p'); // retailer
             let p5 = document.createElement('p'); // product name
             let p6 = document.createElement('p'); // brand
-            let p7 = document.createElement('a'); // description
-            let p8 = document.createElement('a'); // stock
-            let p9 = document.createElement('a'); // price
+            let p7 = document.createElement('p'); // description
+            let p8 = document.createElement('p'); // stock
+            let p9 = document.createElement('p'); // price
+            let p10 = document.createElement('p'); // score
             
             // Set the innerHTML of the div
             p1.innerHTML = `URL: ${data.URL}`;
@@ -488,6 +489,7 @@
             p7.innerHTML = `Descpiption: ${data.Description}`;
             p8.innerHTML = `Stock: ${data.Stock}`;
             p9.innerHTML = `Price: ${data.Price}`;
+            p10.innerHTML = `Last Edited: ${data.DateEdit}`;
             
             
             // Create a new button
@@ -516,6 +518,7 @@
             item_div.appendChild(p7);
             item_div.appendChild(p8);
             item_div.appendChild(p9);
+            item_div.appendChild(p10);
             item_div.appendChild(btn);
             
             return item_div;
@@ -557,7 +560,7 @@
             let parentElement = clickedElement.parentElement;
             
             // Get the data from the parent element
-            let nameText = parentElement.children[5].textContent;
+            let nameText = parentElement.children[4].textContent;
             let priceText = parentElement.children[8].textContent;
             let descriptionText = parentElement.children[6].textContent;
             let urlText = parentElement.children[1].textContent;
@@ -589,6 +592,7 @@
             modalBodyURL.value = productURL;
             modalBodyPicURL.value = productPicURL;
         }
+
         let isSwitchingModals = false;
         let editBtn = document.querySelector('#editModal');
         editBtn.addEventListener('show.bs.modal', onShow);
@@ -642,11 +646,15 @@
     </script>
     <script>
         document.getElementById('submitEditForm').addEventListener('click', function() {
+            document.getElementById("loadingScreen").style.display = "block";
             let modalForm = document.querySelector('#editModal form');
             let csrftoken = document.querySelector('[name=csrf-token]').content;
             let formSend = new FormData(modalForm);
             let productId = formSend.get('ProductID');
-            console.log(productId);
+            console.log(formSend.get('Description'));
+            let object = {};
+            formSend.forEach((value, key) => {object[key] = value});
+            let json = JSON.stringify(object);
             let url = `http://127.0.0.1:8000/api/product/${productId}/`;
             //modalForm.submit();
             fetch(url, {
@@ -655,44 +663,53 @@
                     'Content-Type': 'application/json',
                     'X-CSRFToken': csrftoken
                 },
-                body: new FormData(modalForm)
+                body: json
             })
-            .then(response => response.json())
+            .then(response => {
+                responseHeader(response.status, response.statusText);
+                console.log(response);
+                return response.json()
+            })
             .then(data => {
-                console.log('Success:', data);
-                //responseModal();
-                //setNewData(data);
+                console.log(data);
+                setNewData(data);
+                responseModal(data);
             })
             .catch((error) => {
-                console.error('Error:', error);
+                console.error(error);
             });
-
-
-
-
-            //responseModal();
         });
 
-        function responseModal() {
+        function responseHeader(status, text) {
+            let modalTitle = document.querySelector('#responseModal .modal-title');
+            modalTitle.textContent = `Status ${status}: ${text}`;
+        }
+
+        function responseModal(data) {
             let myModal = new bootstrap.Modal(document.getElementById('responseModal'));
+            let modalBody = document.querySelector('#responseModal .modal-body');
+            let jsonString = JSON.stringify(data, null, 2);
+            modalBody.textContent = jsonString;
             myModal.show();
+            document.getElementById("loadingScreen").style.display = "none";
         }
 
         function setNewData(data) {
-            let productId = data.ProductID;
-            let productName = data.ProductName;
-            let productPrice = data.Price;
-            let productStock = data.Stock;
-            let productDescription = data.Description;
-            let productURL = data.URL;
-            let productPicURL = data.PicURL;
-            let productDiv = document.getElementById(productId);
-            productDiv.children[5].textContent = `Product Name : ${productName}`;
-            productDiv.children[8].textContent = `Price: ${productPrice}`;
-            productDiv.children[6].textContent = `Descpiption: ${productDescription}`;
-            productDiv.children[1].textContent = `URL: ${productURL}`;
-            productDiv.children[2].textContent = `Picture: ${productPicURL}`;
-            productDiv.children[7].textContent = `Stock: ${productStock}`;
+            let productDiv = document.getElementById(data.ProductID);
+
+            productDiv.children[1].textContent = `URL: ${data.URL}`;
+            productDiv.children[2].textContent = `Picture: ${data.PicURL}`;
+            productDiv.children[4].textContent = `Product Name : ${data.ProductName}`;
+            productDiv.children[6].textContent = `Descpiption: ${data.Description}`;
+            productDiv.children[7].textContent = `Stock: ${data.Stock}`;
+            productDiv.children[8].textContent = `Price: ${data.Price}`;
+            productDiv.children[9].textContent = `Last Edited: ${data.DateEdit}`;
+
+            productDiv.dataset.price = data.Price;
+            productDiv.dataset.score = data.SimilarScore;
+            productDiv.dataset.group = data.SimilarGroup;
+            
+            changeGroup(data.ProductID, data.SimilarGroup);
         }
     </script>
 </body>
