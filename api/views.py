@@ -169,6 +169,7 @@ class UpdateViewset(viewsets.ModelViewSet):
     def retrieve(self, request, *args, **kwargs):
         id=kwargs.get('pk')
         update(id)
+
         response = super().retrieve(request, *args, **kwargs)
     
         return response

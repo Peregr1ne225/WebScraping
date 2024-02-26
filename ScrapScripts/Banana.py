@@ -132,7 +132,7 @@ def get_item(soup, path, id): #Per Page
             if len(stock) > 25:
                 stock = stock[0::24]
         else:
-            stock = "Instock"
+            stock = "In Stock"
         pic = item.find("img", {"class":"image"}).get("src")
         if item.find("div", {"class":"product-short-attribute"}) is not None:
             desc = item.find("div", {"class":"product-short-attribute"}).text.strip()

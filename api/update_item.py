@@ -13,7 +13,11 @@ django.setup()
 from api.models import *
 
 def update(id):
-    product = Products.objects.get(ProductID=id)
+    try:
+        product = Products.objects.get(ProductID=id)
+    except Products.DoesNotExist:
+        print("No Product")
+        return "No Product"
     list_item = []
     list_item.append(product.ProductID)
     url = product.URL
@@ -27,11 +31,15 @@ def update(id):
         item = adviceItem(url)
     
     if item is None:
+        delete_product = Products.objects.get(ProductID=list_item[0])
+        delete_product.delete()
         print("No Element")
+        return "No Element"
     else:
         list_item = list_item + item
         add_newdata(list_item)
         print(list_item)
+        return "Update Complete"
 
 def bananaItem(url):
     list_item = []
@@ -42,8 +50,10 @@ def bananaItem(url):
         return None
     
     #Price
-    price = soup.find("div", {"class":"selling-price"}).text.strip().replace(",", "").replace("฿", "")
     try:
+        price = soup.find_all("div", {"class":"product-detail-summary"})[1]
+        price = price.find("div", {"class":"selling-price"}).text.strip().replace(",", "").replace("฿", "")
+        
         price = float(price)
     except ValueError:
         price = 0
@@ -66,7 +76,7 @@ def jibItem(url):
     list_item = []
     soup = connect(url)
     
-    if soup.find("div", {"class":"price_box"}) is None:
+    if soup.find("div", {"id":"price_box"}) is None:
         print("No Element")
         return None
     
@@ -121,8 +131,7 @@ def connect(url):
     # driver.set_window_position(2000, 0)
     # driver.maximize_window()
     driver.get(url)
-    if "www.bnn.in.th" in url:
-        time.sleep(1)
+    time.sleep(3)
     return BeautifulSoup(driver.page_source, 'html.parser')
 
 def add_newdata(list_item):
@@ -131,19 +140,20 @@ def add_newdata(list_item):
     new_price = "{:.2f}".format(float(list_item[1]))
     #Update Price
     if old_price != new_price:
-        Products.objects.filter(ProductID=list_item[0]).update(Price = list_item[1])
-        update_product = Products.objects.get(ProductID=list_item[0])
-        create_log(update_product, "Price", old_price, update_product.Price)
+        product.Price = new_price
+        product.save()
+        create_log(product, "Price", old_price, product.Price)
     
     #Update Stock
-    if product.Stock != list_item[2]:
-        Products.objects.filter(ProductID=list_item[0]).update(Stock = list_item[2])
-        update_product = Products.objects.get(ProductID=list_item[0])
-        create_log(update_product, "Stock", product.Stock, update_product.Stock)
+    old_stock = product.Stock
+    if old_stock != list_item[2]:
+        product.Stock = list_item[2]
+        product.save()
+        create_log(product, "Stock", old_stock, list_item[2])
 
 def create_log(id, attrib, old, new):
     new_log = Logs.objects.create(
-        product = Products.objects.get(ProductID=id),
+        ProductID = id,
         EditBy = "System",
         EditAttrib = attrib,
         OldData = old,
@@ -152,4 +162,7 @@ def create_log(id, attrib, old, new):
     print(new_log)
     
 if __name__ == "__main__":
-    update("A0143153")
+    print("This is functoon module")
+    #update("A0157531")
+else:
+    pass
