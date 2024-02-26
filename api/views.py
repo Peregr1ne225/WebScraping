@@ -11,6 +11,7 @@ from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication
 import requests
 import json
+from .addlog import add_log
 
 class NoLimitPagination(pagination.PageNumberPagination):
     page_size = None
@@ -50,6 +51,7 @@ class ProductViewset(viewsets.ModelViewSet):
         try:
             instance = self.get_object()
             for field, value in request.data.items():
+                add_log(instance.ProductID, field, value)
                 if field == 'BrandID':
                     value = Brands.objects.get(BrandID=value)
                 if field == 'RetailID':
