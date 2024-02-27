@@ -49,7 +49,7 @@ INSTALLED_APPS = [
     'api',  # Oup app
     'rest_framework',  # DRF
     'rest_framework.authtoken',
-    'celery'
+    "ScrapScripts",
 ]
 
 MIDDLEWARE = [
@@ -140,9 +140,6 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-import os
-CELERY_BROKER_URL = os.environ.get('amqp://guest:guest@localhost')
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [

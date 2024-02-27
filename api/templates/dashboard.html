@@ -16,14 +16,26 @@
 </head>
 <body>
     {% include "navbar.html" %}
-    <div class="scrap-menu container d-flex justify-content-center mb-3">
-        <div class=" d-flex align-items-center justify-content-center">
-            <p class="d-flex align-self-center">Strat Here</p>
+    <!-- Scrap Menu -->
+    <div class="scrap-menu container d-flex">
+        <!-- Scrap Now -->
+        <div class="scrap-now  d-flex flex-fill align-items-center justify-content-around">
+            <button class="btn btn-lg btn-outline-primary d-flex align-self-center">Scrap Now</button>
+            <button class="btn btn-lg btn-outline-success d-flex align-self-center">Scrap Later</button>
+        </div>
+        <!-- Time Picker -->
+        <div class="set-time d-flex flex-fill align-items-center justify-content-center">
+            <p class="d-flex align-self-center">Date Picker</p>
+        </div>
+        <!-- Time Lastest -->
+        <div class="lastest-update d-flex flex-fill flex-column align-items-end justify-content-center">
+
         </div>
     </div>
+    <!-- Log Display-->>
     <div class="log-diplay container d-flex bg-secondary flex-column align-items-center" style="height: 70vh">
         <div class="fs-4 d-flex align-items-center" style="height: 15%;">
-           <p class="fw-bold m-auto text-primary">Log Display</p>
+           <p class="fw-bold m-auto text-warning">Log Display</p>
         </div>
         <div class="log-panel d-flex flex-grow-1 flex-column-reverse mb-4 px-3">
 
@@ -37,8 +49,46 @@
         node.textContent = text;
         return node;
     }
+
+    function createStrongText(text) {
+        let node = document.createElement('strong');
+        node.textContent = text;
+        return node;
+    }
+
+    function isoToTime(isoString) {
+        let date = new Date(isoString);
+        let year = date.getFullYear();
+        let month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-based in JavaScript
+        let day = date.getDate().toString().padStart(2, '0');
+        let hours = date.getHours().toString().padStart(2, '0');
+        let minutes = date.getMinutes().toString().padStart(2, '0');
+        let seconds = date.getSeconds().toString().padStart(2, '0');
+        let formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+        return formattedDate;
+    }
     // Log data
     let log_data = JSON.parse('{{ data|escapejs|safe }}');
+    window.addEventListener('load', function(){
+        let date = log_data[0].DateEdit;
+        let div_time = document.querySelector('.lastest-update');
+        
+        let p_date = document.createElement('p');
+        let p_time = document.createElement('p');
+        p_date.className = "fs-4 d-flex me-5";
+        p_time.className = "fs-4 d-flex me-5";
+        
+        let date_time = isoToTime(date).split(" ");
+        p_date.appendChild(createStrongText('Lastest Edit Date: '));
+        p_time.appendChild(createStrongText('Time: '));
+        p_date.appendChild(createUnderlineText(date_time[0]));
+        p_time.appendChild(createUnderlineText(date_time[1]));
+
+        div_time.appendChild(p_date);
+        div_time.appendChild(p_time);
+        
+    })
+
     window.addEventListener('load', function(){
         let log_panel = document.querySelector('.log-panel');
         log_data.forEach((log) => {
@@ -46,18 +96,9 @@
             p.className = 'fs-6 border-top border-primary my-auto py-2';
             
             let isoString = log.DateEdit;
-            let date = new Date(isoString);
-            let year = date.getFullYear();
-            let month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-based in JavaScript
-            let day = date.getDate().toString().padStart(2, '0');
-            let hours = date.getHours().toString().padStart(2, '0');
-            let minutes = date.getMinutes().toString().padStart(2, '0');
-            let seconds = date.getSeconds().toString().padStart(2, '0');
-            let formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+            let editDate = isoToTime(isoString);
             
-            let editDate = document.createElement('strong');
-            editDate.textContent = formattedDate;
-            p.appendChild(editDate);
+            p.appendChild(createStrongText(`${editDate} `));
             p.appendChild(document.createTextNode(` Edit by: `));
             p.appendChild(createUnderlineText(`${log.EditBy}`));
             p.appendChild(document.createTextNode(` ProductID: `));
