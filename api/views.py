@@ -234,5 +234,8 @@ def cate(request, id):
     return render(request, template, {'data': json.dumps(results)})
 
 def dashboard(request):
-    url = "http://127.0.0.1:8000"
-    return render(request, 'dashboard.html')
+    url = "http://127.0.0.1:8000/api/log/"
+    response = requests.get(url)
+    data = response.json()
+    results = data['results']
+    return render(request, "dashboard.html", {'data': json.dumps(results)})

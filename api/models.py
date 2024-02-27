@@ -73,9 +73,10 @@ class Logs(models.Model):
     OldData = models.CharField(max_length=225)
     NewData = models.CharField(max_length=225)
     DateEdit = models.DateTimeField(auto_now=True)
-
+    
     class Meta:
         db_table = "Logs"
-    
+        ordering = ['-DateEdit']
+
     def __str__(self):
         return f"ProductID: {self.ProductID}, EditAttrib: {self.EditAttrib}, OldData: {self.OldData}, NewData: {self.NewData}"

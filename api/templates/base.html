@@ -101,46 +101,7 @@
         </div>
     </div>
     <!-- End Modal Response -->
-    <!-- Navbar -->
-    <div class="navbar navbar-expand-lg navbar-light bg-light sticky-top" style="z-index: 1030;">
-        <div class="container-fluid d-flex justify-content-between">
-            <a class="navbar-brand" href="/">Web Scrap</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse d-flex " id="navbarNav">
-                <div class="row w-100">
-                    <div class="col-md-5">
-                        <!-- Add Top Cate from javaScript-->
-                        <div id="topcate" class="navbar-nav">
-                    
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <form class="search-container" action="{{ request.path }}" method="get">
-                            <input name="search" class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                            <button class="btn btn-outline-success" type="submit"><i class="fa-solid fa-search"></i></button>
-                        </form>
-                    </div>
-                    <div class="col-md-5">
-                        <!-- Add Top Brand from javaScript-->
-                        <div id="topbrand" class="navbar-nav">
-
-                        </div>
-                    </div>
-                </div>                
-            </div>
-            <div class="dropdown admin-page">
-                <a id="dropdownAdminButton" class="dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" aria-label="Toggle Admin">Admin</a>
-                <ul id="admin-dropdown" class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownAdminButton">
-                    <li><a class="dropdown-item" href="#">Dashboard</a></li>
-                    <li><a class="dropdown-item" href="{% url 'admin:index' %}">Admin Page</a></li>
-                    <li><a class="dropdown-item" href="#">Log Out</a></li>
-                </ul>
-            </div>
-        </div>
-    </div>
-    <!-- End Navbar -->
+    {% include "navbar.html" %}
     <!-- Sidebar and Main Content -->
     <div class="container-fluid">
         <div class="row">

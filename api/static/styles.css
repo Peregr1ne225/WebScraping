@@ -184,3 +184,16 @@ h1 {
       height: 92.5vh;
     }
   }
+
+.scrap-menu{
+    background-color: #e68e8e;
+    height: 20vh;
+    top: 100px;
+}
+
+.log-panel{
+    top:100px;
+    background-color: #f1e4e4;
+    width: 95%;
+    overflow-y: auto;
+}
