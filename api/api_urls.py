@@ -5,16 +5,16 @@ from api import views
 
 
 router = routers.DefaultRouter()
-router.register(r'product', views.ProductViewset)
-router.register(r'brand', views.BrandViewset)
-router.register(r'category', views.CategoryViewset)
-router.register(r'retail', views.RetailerViewset)
-router.register(r'log', views.LogViewset)
-router.register(r'brand_top', views.BrandTopViewset)
-router.register(r'category_top', views.CategoryTopViewset)
-router.register(r'category_parent', views.CategoryParentViewset)
-router.register(r'category_root', views.CategoryRootViewset)
-router.register(r'update', views.UpdateViewset)
+router.register(r'product', views.ProductViewset, basename='product')
+router.register(r'brand', views.BrandViewset, basename='brand')
+router.register(r'category', views.CategoryViewset, basename='category')
+router.register(r'retail', views.RetailerViewset, basename='retail')
+router.register(r'log', views.LogViewset, basename='log')
+router.register(r'brand_top', views.BrandTopViewset, basename='top_brand')
+router.register(r'category_top', views.CategoryTopViewset, basename='top_category')
+router.register(r'category_parent', views.CategoryParentViewset, basename='category_parent')
+router.register(r'category_root', views.CategoryRootViewset, basename='category_root')
+router.register(r'update', views.UpdateViewset, basename='update')
 
 urlpatterns = [
     path('api/', include(router.urls)),
