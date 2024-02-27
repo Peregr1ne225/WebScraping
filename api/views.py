@@ -233,6 +233,6 @@ def cate(request, id):
 
     return render(request, template, {'data': json.dumps(results)})
 
-def dash_board(request):
+def dashboard(request):
     url = "http://127.0.0.1:8000"
     return render(request, 'dashboard.html')
