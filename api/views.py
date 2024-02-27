@@ -2,10 +2,17 @@ from django.shortcuts import render
 from .savenewscore import check_update
 from .addlog import add_log
 from .update_item import update
+from ScrapScripts.Advice import get_sub as advice
+from ScrapScripts.JIB import get_sub as jib
+from ScrapScripts.Banana import get_path as banana
+
 # Create your views here.
 #from django.http import HttpResponse
 from urllib.parse import urljoin
 from django.urls import reverse
+from django.http import JsonResponse
+from django.core import serializers
+from django.shortcuts import redirect
 from .models import *
 from .serializers import *
 from rest_framework import permissions, viewsets
@@ -234,8 +241,42 @@ def cate(request, id):
     return render(request, template, {'data': json.dumps(results)})
 
 def dashboard(request):
-    url = "http://127.0.0.1:8000/api/log/"
-    response = requests.get(url)
-    data = response.json()
-    results = data['results']
-    return render(request, "dashboard.html", {'data': json.dumps(results)})
+    if request.method == 'POST':
+        retail_id = request.POST.get('retail_id')
+        for id in retail_id:
+            retailer = Retailers.objects.get(RetailID=id)
+            
+            retailer.ScrapSuccess = "False";
+            retailer.save()
+            if id == '1':
+                try:
+                    advice()
+                    retailer.ScrapSuccess = "True";
+                except:
+                    retailer.ScrapSuccess = "Error";
+            elif id == '2':
+                try:
+                    jib()
+                    retailer.ScrapSuccess = "True";
+                except:
+                    retailer.ScrapSuccess = "Error";
+            elif id == '3':
+                try:
+                    banana()
+                    retailer.ScrapSuccess = "True";
+                except:
+                    retailer.ScrapSuccess = "Error";
+            retailer.save()
+        return redirect('dashboard')
+    
+    else:
+        url = "http://127.0.0.1:8000/api/log/"
+        response = requests.get(url)
+        data = response.json()
+        results = data['results']
+        retailers = Retailers.objects.all()
+        return render(request, "dashboard.html", {'data': json.dumps(results), "retailers": retailers})
+
+def check_status(request):
+    scrapes_status = Retailers.objects.all()
+    return JsonResponse({'status': scrapes_status})

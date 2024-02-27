@@ -42,8 +42,8 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Products
         fields = ('ProductID', 'ProductName', 'BrandID', 'BrandName',
-                  'Price', 'Stock', 'Description', 'URL', 'PicURL', 
-                  'CategoryID', 'RetailID', 'RetailName', 'DateEdit', 
-                  'SimilarGroup', 'SimilarScore', 'DateCreate')
+                'Price', 'Stock', 'Description', 'URL', 'PicURL', 
+                'CategoryID', 'RetailID', 'RetailName', 'DateEdit', 
+                'SimilarGroup', 'SimilarScore', 'DateCreate')
         #fields = ('ProductName', 'Price', 'Stock', 'Description', 'SimilarGroup', 'SimilarScore')
         

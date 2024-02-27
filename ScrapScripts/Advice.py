@@ -1,6 +1,6 @@
-import SeleniumScrap
+from . import SeleniumScrap
 import time
-from save_to_DB import save_list
+from .save_to_DB import save_list
 
 error_list = []
 loop_time = []

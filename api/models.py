@@ -36,6 +36,8 @@ class Retailers(models.Model):
     RetailID = models.AutoField(primary_key=True)
     Retail = models.CharField(max_length=225)
     RetailLogo = models.CharField(max_length=225)
+    LastScraped = models.DateTimeField(auto_now=False)
+    ScrapSuccess = models.CharField(max_length=10, default="True")
 
     class Meta:
         db_table = "Retailers"
