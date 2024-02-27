@@ -197,3 +197,8 @@ h1 {
     width: 98%;
     overflow-y: auto;
 }
+
+.form-check-lg .form-check-input {
+    width: 30px;  /* adjust width as needed */
+    height: 30px; /* adjust height as needed */
+}

@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.shortcuts import render
 from .savenewscore import check_update
 from .addlog import add_log
@@ -5,13 +6,14 @@ from .update_item import update
 from ScrapScripts.Advice import get_sub as advice
 from ScrapScripts.JIB import get_sub as jib
 from ScrapScripts.Banana import get_path as banana
+import threading
+from django.http import HttpResponse
 
 # Create your views here.
-#from django.http import HttpResponse
 from urllib.parse import urljoin
 from django.urls import reverse
 from django.http import JsonResponse
-from django.core import serializers
+from django.core import serializers as d_serializers
 from django.shortcuts import redirect
 from .models import *
 from .serializers import *
@@ -242,31 +244,9 @@ def cate(request, id):
 
 def dashboard(request):
     if request.method == 'POST':
-        retail_id = request.POST.get('retail_id')
-        for id in retail_id:
-            retailer = Retailers.objects.get(RetailID=id)
-            
-            retailer.ScrapSuccess = "False";
-            retailer.save()
-            if id == '1':
-                try:
-                    advice()
-                    retailer.ScrapSuccess = "True";
-                except:
-                    retailer.ScrapSuccess = "Error";
-            elif id == '2':
-                try:
-                    jib()
-                    retailer.ScrapSuccess = "True";
-                except:
-                    retailer.ScrapSuccess = "Error";
-            elif id == '3':
-                try:
-                    banana()
-                    retailer.ScrapSuccess = "True";
-                except:
-                    retailer.ScrapSuccess = "Error";
-            retailer.save()
+        retail_ids = request.POST.get('retail_ids')
+        thread = threading.Thread(target=process_retailer, args=(retail_ids,))
+        thread.start()
         return redirect('dashboard')
     
     else:
@@ -277,6 +257,35 @@ def dashboard(request):
         retailers = Retailers.objects.all()
         return render(request, "dashboard.html", {'data': json.dumps(results), "retailers": retailers})
 
+def process_retailer(retail_ids):
+    for id in retail_ids:
+        retailer = Retailers.objects.get(RetailID=id)
+        retailer.ScrapSuccess = "Scraping.."
+        retailer.save()
+        if id == '1':
+            try:
+                advice()
+                retailer.ScrapSuccess = "Success"
+                retailer.LastScraped = datetime.now()
+            except:
+                retailer.ScrapSuccess = "Error"
+        elif id == '2':
+            try:
+                jib()
+                retailer.ScrapSuccess = "Success"
+                retailer.LastScraped = datetime.now()
+            except:
+                retailer.ScrapSuccess = "Error"
+        elif id == '3':
+            try:
+                banana()
+                retailer.ScrapSuccess = "Success"
+                retailer.LastScraped = datetime.now()
+            except:
+                retailer.ScrapSuccess = "Error"
+        retailer.save()
+
 def check_status(request):
-    scrapes_status = Retailers.objects.all()
-    return JsonResponse({'status': scrapes_status})
+    retailer_status = Retailers.objects.all()
+    data = d_serializers.serialize('json', retailer_status)
+    return HttpResponse(data, content_type='application/json')

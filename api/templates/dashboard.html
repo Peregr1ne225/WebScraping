@@ -19,23 +19,25 @@
     <!-- Scrap Menu -->
     <div class="scrap-menu container d-flex">
         <!-- Scrap Now -->
-        <div class="scrap-now  d-flex flex-fill align-items-center justify-content-around">
-            <form class="form-check" method="post">
+        <div class="ms-3 scrap-now d-flex flex-fill align-items-center justify-content-between">
+            <form class="form-check form-check-lg" method="post">
                 {% csrf_token %}
                 {% for retailer in retailers %}
                     <input class="form-check-input" type="checkbox" id="retailer-{{retailer.RetailID}}" name="retail_ids" value="{{ retailer.RetailID }}">
-                    <label for="retailer-{{retailer.RetailID}}" class="form-check-label">{{ retailer.Retail }}</label><br>
+                    <label for="retailer-{{retailer.RetailID}}" class="ms-3 form-check-label fs-4">{{ retailer.Retail }}</label><br>
                 {% endfor %}
-                <input class="btn btn-primary" type="submit" value="Run Script">
+                <input id="scrapButton"class="btn btn-primary" type="submit" value="Run Script">
             </form>
         </div>
-        <!-- Time Picker -->
-        <div class="per-itemupdate d-flex flex-fill align-items-center justify-content-center">
-            <p class="d-flex align-self-center">Scraping</p>
-        </div>
         <!-- Time Lastest -->
-        <div class="lastest-update d-flex flex-fill flex-column align-items-end justify-content-center">
+        <div class="lastest-item d-flex flex-fill flex-column align-items-center justify-content-center">
 
+        </div>
+        <!-- Status -->
+        <div class="scrap-status d-flex flex-column align-items-end justify-content-end">
+            {% for retailer in retailers %}
+                <p class="fs-5 d-flex">{{retailer.Retail}}: {{retailer.ScrapSuccess}} At: {{retailer.LastScraped}}</p>
+            {% endfor%}
         </div>
     </div>
     <!-- Log Display-->>
@@ -48,6 +50,42 @@
         </div>
     </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function() {
+        function checkStatus() {
+            $.get('/check_status/', function(data) {
+                let status = null;
+                let id = null;
+                for (let i=0;i<data.length;i++) {
+                    status = data[i].fields['ScrapSuccess'];
+                    id = data[i].pk;
+                    console.log(`#retailer-${id}`, status);
+                    if(status == "Success" || status == "Error") {
+                        $(`#retailer-${id}`).prop('disabled', false);
+                        console.log(`#retailer-${id}`, status);
+                    }
+                    else if(status == "Scraping..") {
+                        $(`#retailer-${id}`).prop('disabled', true);
+                        
+                    }
+                    var checkbox = $(`#retailer-${id}`);
+                    console.log(checkbox);
+                }
+            });
+        }
+        checkStatus();
+        
+        setInterval(checkStatus, 60000);
+    });
+    $(document).ready(function() {
+        $('form').on('submit', function(e) {
+            if ($('input[type="checkbox"]:checked').length === 0) {
+                e.preventDefault();
+                alert('Please check at least one checkbox.');
+            }
+        });
+    });
+</script>
 <script>
     // Create underline text
     function createUnderlineText(text) {
@@ -78,12 +116,12 @@
     let log_data = JSON.parse('{{ data|escapejs|safe }}');
     window.addEventListener('load', function(){
         let date = log_data[0].DateEdit;
-        let div_time = document.querySelector('.lastest-update');
+        let div_time = document.querySelector('.lastest-item');
         
         let p_date = document.createElement('p');
         let p_time = document.createElement('p');
-        p_date.className = "fs-4 d-flex me-5";
-        p_time.className = "fs-4 d-flex me-5";
+        p_date.className = "fs-4 d-flex";
+        p_time.className = "fs-4 d-flex";
         
         let date_time = isoToTime(date).split(" ");
         p_date.appendChild(createStrongText('Lastest Edit Date: '));
@@ -121,6 +159,4 @@
         });
     });
 </script>
-
-
 </body>

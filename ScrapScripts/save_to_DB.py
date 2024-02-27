@@ -149,7 +149,6 @@ def data_clean(name):
         else:
             break
     name.strip()
-    print(name)
     return name
 
 #Get Last Group

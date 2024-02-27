@@ -1,4 +1,4 @@
-from . import SeleniumScrap
+from ScrapScripts import SeleniumScrap
 import time
 from .save_to_DB import save_list
 

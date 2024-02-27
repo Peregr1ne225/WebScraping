@@ -4,7 +4,7 @@ from django.db import models
 class Brands(models.Model):
     BrandID = models.AutoField(primary_key=True)
     BrandName = models.CharField(max_length=225, null=True, blank=True)
-    BrandScore = models.IntegerField()
+    BrandScore = models.IntegerField(default=0)
 
     class Meta:
         db_table = "Brands"
@@ -16,7 +16,7 @@ class Brands(models.Model):
 class Categories(models.Model):
     CategoryID = models.AutoField(primary_key=True)
     CategoryName = models.CharField(max_length=225)
-    CategoryScore = models.IntegerField()
+    CategoryScore = models.IntegerField(default=0)
     ParentCategoryID = models.ForeignKey(
         'self', 
         on_delete=models.CASCADE,
