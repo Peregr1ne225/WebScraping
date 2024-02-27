@@ -23,23 +23,52 @@
     </div>
     <div class="log-diplay container d-flex bg-secondary flex-column align-items-center" style="height: 70vh">
         <div class="fs-4 d-flex align-items-center" style="height: 15%;">
-           <p class="fw-bold m-auto">Log Display</p>
+           <p class="fw-bold m-auto text-primary">Log Display</p>
         </div>
         <div class="log-panel d-flex flex-grow-1 flex-column-reverse mb-4 px-3">
-            <p class="fs-6 border-top border-primary my-auto py-2">Log Panel</p>
-            <p class="fs-6 border-top border-primary my-auto py-2">tes1</p>
-            <p class="fs-6 border-top border-primary my-auto py-2">tes2</p>
-            <p class="fs-6 border-top border-primary my-auto py-2">tes3</p>
+
         </div>
     </div>
 <script>
+    // Create underline text
+    function createUnderlineText(text) {
+        let node = document.createElement('span');
+        node.style.textDecoration = 'underline';
+        node.textContent = text;
+        return node;
+    }
+    // Log data
     let log_data = JSON.parse('{{ data|escapejs|safe }}');
     window.addEventListener('load', function(){
         let log_panel = document.querySelector('.log-panel');
         log_data.forEach((log) => {
-            console.log(log);
             let p = document.createElement('p');
-            p.textContent = log.NewData;
+            p.className = 'fs-6 border-top border-primary my-auto py-2';
+            
+            let isoString = log.DateEdit;
+            let date = new Date(isoString);
+            let year = date.getFullYear();
+            let month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-based in JavaScript
+            let day = date.getDate().toString().padStart(2, '0');
+            let hours = date.getHours().toString().padStart(2, '0');
+            let minutes = date.getMinutes().toString().padStart(2, '0');
+            let seconds = date.getSeconds().toString().padStart(2, '0');
+            let formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+            
+            let editDate = document.createElement('strong');
+            editDate.textContent = formattedDate;
+            p.appendChild(editDate);
+            p.appendChild(document.createTextNode(` Edit by: `));
+            p.appendChild(createUnderlineText(`${log.EditBy}`));
+            p.appendChild(document.createTextNode(` ProductID: `));
+            p.appendChild(createUnderlineText(`${log.ProductID}`));
+            p.appendChild(document.createTextNode(` Attributes: `));
+            p.appendChild(createUnderlineText(`${log.EditAttrib}`));
+            p.appendChild(document.createTextNode(` From: `));
+            p.appendChild(createUnderlineText(`${log.OldData}`));
+            p.appendChild(document.createTextNode(` To: `));
+            p.appendChild(createUnderlineText(`${log.NewData}`));
+
             log_panel.appendChild(p);
         });
     });
