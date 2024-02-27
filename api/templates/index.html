@@ -25,13 +25,13 @@
             let url = new URL(window.location.href);
             if(url.searchParams.get("brand") != null) {
                 let brand = url.searchParams.get("brand");
-                fetch("http://127.0.0.1:8000/api/brand/?id=" + brand)
+                fetch("/api/brand/?id=" + brand)
                 .then(response => response.json())
                 .then(data => {
                 brandtoSubmenu(data, document.getElementById("dynamicBrand"))
                 })
             }else{
-                fetch("http://127.0.0.1:8000/api/brand/")
+                fetch("/api/brand/")
                 .then(response => response.json())
                 .then(data => {
                 brandtoSubmenu(data, document.getElementById("dynamicBrand"))
@@ -69,7 +69,7 @@
             item_group.className = 'item-group border border-primary';
             item_group.id = `group-${group}`;
             try{
-                let response = await fetch('http://127.0.0.1:8000/api/product/?group='+group);
+                let response = await fetch('/api/product/?group='+group);
                 let product = await response.json();
                 product.results.forEach(function(item){
                     sliderSetPrice(item.Price) // set min and max price

@@ -104,7 +104,7 @@
     <!-- Navbar -->
     <div class="navbar navbar-expand-lg navbar-light bg-light sticky-top" style="z-index: 1030;">
         <div class="container-fluid d-flex justify-content-between">
-            <a class="navbar-brand" href="http://127.0.0.1:8000/">Web Scrap</a>
+            <a class="navbar-brand" href="/">Web Scrap</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -212,7 +212,7 @@
                 brandIncrease(url.searchParams.get("brand"));
             }
             try {
-                fetch("http://127.0.0.1:8000/api/category_parent/")
+                fetch("/api/category_parent/")
                 .then(response => response.json())
                 .then(data => {
                     nestedLoop(data, document.getElementById("dynamicCate"));
@@ -227,10 +227,10 @@
             let csrftoken = document.querySelector('[name=csrf-token]').content;
             path_part = path.split('/');
             cate_id = path_part[1];
-            let url = "http://127.0.0.1:8000/api/category_root/?id=" + cate_id;
+            let url = "/api/category_root/?id=" + cate_id;
             fetch(url).then(response => response.json()).then(data => {
                 cate_id = data.root_category_id;
-                url = "http://127.0.0.1:8000/api/category/"+ cate_id + "/";
+                url = "/api/category/"+ cate_id + "/";
                 let patchDataCate = {
                     "CategoryScore": 1
                 };
@@ -254,7 +254,7 @@
         // Increase Brand Score
         function brandIncrease(brand){
             let csrftoken = document.querySelector('[name=csrf-token]').content;
-            url = "http://127.0.0.1:8000/api/brand/" + brand + "/";
+            url = "/api/brand/" + brand + "/";
             let patchDataBrand = {
                 "BrandScore": 1
             };
@@ -394,7 +394,7 @@
         // Add Top Brand from API
         window.addEventListener("load", function(){
             try{
-                fetch("http://127.0.0.1:8000/api/brand_top/")
+                fetch("/api/brand_top/")
                 .then(response => response.json())
                 .then(data => {
                     brandtoNav(data.results, document.getElementById("topbrand"));
@@ -420,7 +420,7 @@
         // Add Top Category from API
         window.addEventListener("load", function(){
             try{
-                fetch("http://127.0.0.1:8000/api/category_top/")
+                fetch("/api/category_top/")
                 .then(response => response.json())
                 .then(data => {
                     catetoNav(data.results, document.getElementById("topcate"));
@@ -486,7 +486,7 @@
                 document.getElementById("loadingScreen").style.display = "block";
                 console.log("Wait")
                 let productId = this.parentElement.parentElement.id;
-                let url = `http://127.0.0.1:8000/api/update/${productId}/`;
+                let url = `/api/update/${productId}/`;
                 try {
                     fetch(url)
                     .then(response => response.json())
@@ -675,7 +675,7 @@
             let object = {};
             formSend.forEach((value, key) => {object[key] = value});
             let json = JSON.stringify(object);
-            let url = `http://127.0.0.1:8000/api/product/${productId}/`;
+            let url = `/api/product/${productId}/`;
             //modalForm.submit();
             fetch(url, {
                 method: 'PATCH',
