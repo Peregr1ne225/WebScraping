@@ -1,0 +1,86 @@
+<!-- Modal Edit-->
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+        <!-- Modal Header -->
+        <div class="modal-header">
+            <h5 class="modal-title" id="editModalLabel">Edit Product Data</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <!-- Modal Body -->
+            <form method="post">
+                <input type="hidden" id="productId" name="ProductID">
+                <div class="mb-3 row">
+                    <!-- ProductName -->
+                    <label for="productName" class="col-form-label col-sm-2">Product Name:</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="productName" name="ProductName">
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <!-- Price -->
+                    <label for="productPrice" class="col-form-label col-sm-2 text-end">Price:</label>
+                    <div class="col-sm-4">
+                        <input type="text" class="form-control" id="productPrice" name="Price">
+                    </div>
+                    <!-- Stock -->
+                    <label for="productStock" class="col-form-label col-sm-2 text-end">Stock:</label>
+                    <div class="col-sm-4">
+                        <select type="text" class="form-select" id="productStock" name="Stock">
+                            <option selected disabled value="">&lt;Not Change&gt;</option>
+                            <option value="In Stock">In Stock</option>
+                            <option value="Out of Stock">Out of Stock</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <!-- Description -->
+                    <label for="productDescription" class="col-form-label">Description:</label>
+                    <textarea name="Description" class="form-control" id="productDescription" rows="5"></textarea>
+                </div>
+            </form>
+        </div>
+        <!-- Modal Footer -->
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary edit-discard" data-bs-dismiss="modal">Discard</button> <!-- Close Modal-->
+            <button id="confirmCheck" type="button" class="btn btn-primary edit-save" data-bs-target="#confirmModal" data-bs-toggle="modal" data-bs-dismiss="modal">Save changes</button> <!-- Add onclick event to submit form -->
+        </div>
+    </div>
+    </div>
+</div>
+<!-- End Modal Edit-->
+<!-- Modal Confirm Edit -->
+<div class="modal fade" id="confirmModal" aria-hidden="true" aria-labelledby="confirmModalLabel" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="confirmEdit">Confirm Edit</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+
+        </div>
+        <div class="modal-footer">
+            <button id="backToEdit" type="button" class="btn btn-warning" data-bs-target="#editModal" data-bs-toggle="modal" data-bs-dismiss="modal">Cancel</button>
+            <button id="submitEditForm" type="button" class="btn btn-success" data-bs-dismiss="modal">Confirm</button>
+        </div>
+    </div>
+    </div>
+</div>
+<!-- End Modal Confirm -->
+<!-- Modal Response -->
+<div class="modal fade" id="responseModal" aria-hidden="true" aria-labelledby="responseModalLabel" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">Response</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body text-break flex-shrink-1">
+            Hide this modal and show the first with the button below.
+        </div>
+        </div>
+    </div>
+</div>
+<!-- End Modal Response -->

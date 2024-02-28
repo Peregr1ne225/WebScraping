@@ -9,22 +9,17 @@ body {
 }
 
 .navbar-brand {
-    line-height: 60px;
     color: #0d5dd4;
 }
 
-#navbarNav{
-    justify-content: space-between;
-    align-self: right;
+#topbrand a{
+    color: #2f67df;
+    font-size: small;
 }
 
-.fas.fa-search{
-    padding-right: 10px;
-}
-
-.search-container{
-    margin: auto;
-    padding-right: 10%;
+#topcate a{
+    color: #5e3092;
+    font-size: small;
 }
 
 .admin-page {
@@ -34,18 +29,105 @@ body {
     margin-right: 10px;
 }
 
-#dropdownMenuLink{
-    color: #ff0000;
-    font-size: 20px;
-    text-decoration: none;
-}
-ul.dropdown-menu{
-    background-color: #72d4ec;
-}
-
 .sidebar{
     background-color: #021af3;
 }
+
+.sidebar p{
+    color: #fff;
+    font-size: 20px;
+    padding: 10px;
+    margin: 0;
+}
+
+#dynamicCate::-webkit-scrollbar {
+    width: 10px;
+}
+
+#dynamicCate::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+}
+    
+#dynamicCate::-webkit-scrollbar-thumb {
+    background: #888; 
+}
+
+#dynamicCate::-webkit-scrollbar-thumb:hover {
+    background: #555; 
+}
+
+#dynamicCate {
+    height: 30%; 
+    overflow-y: auto;
+}
+
+#dynamicBrand::-webkit-scrollbar {
+    width: 10px;
+}
+
+#dynamicBrand::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+}
+    
+#dynamicBrand::-webkit-scrollbar-thumb {
+    background: #888; 
+}
+
+#dynamicBrand::-webkit-scrollbar-thumb:hover {
+    background: #555; 
+}
+
+#dynamicBrand {
+    height: 30%; 
+    overflow-y: auto;
+}
+
+.price-min-max p{
+    font-size: small;
+}
+
+.noUi-connect {
+    background: #212c2ba2; /* Color of the bar between the handles */
+}
+
+.noUi-target {
+    background: #f0f0f0;
+    height: 10px;
+}
+
+.noUi-handle {
+    background: #ffffff; /* Color of the handles */
+    border-color: #ffffff; /* Color of the handles */
+    width: 20px !important;
+    height: 20px !important;
+}
+
+.noUi-handle-lower {
+    /* Apply your desired styles here */
+    margin-right: 8px;
+}
+
+.noUi-handle-upper {
+    /* Apply your desired styles here */
+    margin-right: 8px !important;
+}
+
+a#dropdownAdminButton{
+    color: #ff0000;
+    font-size: 20px;
+    text-decoration: none;
+    user-select: none;
+}
+
+.no-select{
+    user-select: none;
+}
+
+#admin-dropdown{
+    background-color: #72d4ec;
+    max-width: 200px;
+}
+
 h1 {
     color: #e42121;
     font-size: 42px;
@@ -54,13 +136,81 @@ h1 {
     padding: 0;
 }
 
-.item-cate{
-    display: flex;
-    justify-content: space-between;
-    border-style: solid;
+.list-of-cate {
+    background-color: #ebb0b0;
 }
-.item-group {
+
+.list-of-brand {
+    background-color: #b1f3da;
+}
+
+.list-group-item a{
+    text-decoration: none;
+    color: #000;
+}
+
+.item-group {    
+    margin: 10px auto;
+    padding: 10px;
+}
+
+.item-product{
+    margin: 5px; /* Add some margin to create space between items */
+    padding: 5px;
+}
+
+.item-group .item-product+.item-product{
+    border-top: 2px dotted #9aa2ee79;
+    margin-top: -1px; /* Add a border to the top of all p elements except the first one */
+}
+
+.item-group p{
+    margin: 0;
+}
+
+.nested-item{
+    padding-left: 20px;
+}
+
+@media (max-width: 992px) { /* Adjust this value to match the breakpoint at which your navbar collapses */
+    #admin-dropdown {
+      left: 50% !important; /* Center the dropdown */
+      transform: translateX(-50%); /* Use translate to adjust for the width of the dropdown */
+    }
+}
+
+@media (min-width: 768px) { /* This is the breakpoint for medium screens in Bootstrap */
+    .md-vh-100 {
+      height: 92.5vh;
+    }
+  }
+
+.scrap-menu{
+    background-color: #e1f1c8;
+    height: 20vh;
+    top: 100px;
+}
+
+.log-panel{
+    top:100px;
+    background-color: #f1e4e4;
+    width: 98%;
+    overflow-y: auto;
+}
+
+.form-check-lg .form-check-input {
+    width: 30px;  /* adjust width as needed */
+    height: 30px; /* adjust height as needed */
+}
+
+.edit-info, .update-info {
+    width: 30px;
+    height: 30px;
     display: flex;
-    justify-content: space-between;
-    border-style: solid;
+    justify-content: center;
+    align-items: center;
+}
+
+#dropdownSortButton.dropdown-toggle::after {
+    display: none;
 }
