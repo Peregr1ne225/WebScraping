@@ -37,7 +37,7 @@ window.addEventListener("load", function(){
 // Add Category to Navbar
 function catetoNav(data, parentElement) {
     let currentUrl = new URL(window.location.href);
-    for (let i = 0; i < 5; i++) {
+    for (let i = 4; i >= 0; i--) {
         let cateLink = document.createElement("a");
         cateLink.className = "nav-link align-middle";
         cateLink.href = currentUrl.origin + "/" + data[i].CategoryID + "/";
