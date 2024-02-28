@@ -101,6 +101,7 @@
 </div>
 <script src="https://cdn.jsdelivr.net/npm/nouislider@14.6.3/distribute/nouislider.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<script src="{% static 'js/score.js' %}"></script>
 <script>
     // load Category from API
     window.onload = function() {
@@ -121,59 +122,6 @@
         } catch (error) {
             console.log(error);
         }
-    }
-    // Increase Category Score
-    function cateIncrease(path){
-        let csrftoken = document.querySelector('[name=csrf-token]').content;
-        path_part = path.split('/');
-        cate_id = path_part[1];
-        let url = "/api/category_root/?id=" + cate_id;
-        fetch(url).then(response => response.json()).then(data => {
-            cate_id = data.root_category_id;
-            url = "/api/category/"+ cate_id + "/";
-            let patchDataCate = {
-                "CategoryScore": 1
-            };
-            fetch(url, {
-                method: "PATCH",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRFToken": csrftoken
-                },
-                body: JSON.stringify(patchDataCate)
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log("Success:", data);
-            })
-            .catch((error) => {
-                console.error("Error:", error);
-            });
-        })
-    }
-    // Increase Brand Score
-    function brandIncrease(brand){
-        let csrftoken = document.querySelector('[name=csrf-token]').content;
-        url = "/api/brand/" + brand + "/";
-        let patchDataBrand = {
-            "BrandScore": 1
-        };
-        fetch(url, {
-            method: "PATCH",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRFToken": csrftoken
-            },
-            body: JSON.stringify(patchDataBrand)
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log("Success:", data);
-        })
-        .catch((error) => {
-            console.error("Error:", error);
-        });
-        
     }
     // Get URL for category
     function getUrl(id) {
@@ -218,8 +166,6 @@
             }
         }
     }
-</script>
-<script>
     // Add Expand Colllaspe Button
     function toggleIcon(buttonId) {
         let button = document.getElementById(buttonId);
@@ -233,64 +179,6 @@
         }
     }
 </script>
-<script>
-    // Price Slider
-    let slider = document.getElementById('price-slider');
-    noUiSlider.create(slider, {
-        start: [0, 100],
-        connect: true,
-        range: {
-            'min': 0,
-            'max': 100
-        },
-        step: 1
-    });
-    // Change Slider Value
-    slider.noUiSlider.on('update', function (values, handle) {
-        if (handle) {
-            document.getElementById('max-value').innerHTML = values[handle];
-        } else {
-            document.getElementById('min-value').innerHTML = values[handle];
-        }
-    });
-    // Change Item Range
-    slider.noUiSlider.on('change.one', function (values, handle) {
-        let items_div = document.querySelectorAll('div[data-price]');
-        items_div.forEach(item_price => {
-            let price = Number(item_price.dataset.price);
-            if(price >= values[0] && price <= values[1]) {
-                item_price.classList.remove('d-none');
-                item_price.classList.add('d-flex');
-            }
-            else {
-                item_price.classList.remove('d-flex');
-                item_price.classList.add('d-none');
-            }
-            addDNoneToItemGroup();
-        });
-    });
-    // Group hidden
-    function addDNoneToItemGroup() {
-        let itemGroups = document.querySelectorAll(".item-group");
-        itemGroups.forEach(itemGroup => {
-            let children = itemGroup.children;
-            let allHaveDNone = true;
-            for (let i = 0; i < children.length; i++) {
-                if (!children[i].classList.contains("d-none")) {
-                    allHaveDNone = false;
-                    break;
-                }
-            }
-            if (allHaveDNone) {
-                itemGroup.classList.add("d-none");
-            } else {
-                itemGroup.classList.remove("d-none");
-            }
-        });
-    }
-</script>
-
-
 <script>
 // Add Product to Display
     function addProduct(data) {
@@ -396,34 +284,10 @@
         return item_div; // Return the new div to group
     }
 </script>
-<script>
-    //Set Value for Price Slider
-    let minPrice = 0;
-    let maxPrice = 0;
-        
-    function sliderSetPrice(price) {
-        if(minPrice == 0 || minPrice > price || maxPrice == 0 || maxPrice < price) {
-            if(minPrice == 0 || minPrice > price) minPrice = price;
-            if(maxPrice == 0 || maxPrice < price) maxPrice = price;
-        
-            minPrice = parseFloat(minPrice);
-            maxPrice = parseFloat(maxPrice);
-            if (minPrice == maxPrice) {
-                // If they are, adjust maxPrice slightly
-                maxPrice += 0.01;
-            }
-            slider.noUiSlider.updateOptions({
-                start: [minPrice, maxPrice],
-                range: {
-                    'min': minPrice,
-                    'max': maxPrice
-                }
-            });
-        }
-    }
-</script>
+<script src="{% static 'js/slider.js' %}"></script>
 {% block script %}
 {% endblock script %}
+<script src="{% static 'js/sort.js' %}"></script>
 <script>
     window.addEventListener('load', function() {
         let sortDropdown = document.querySelectorAll('#sortDropdown .dropdown-item');
@@ -448,55 +312,6 @@
             });
         });
     });
-    function sortName(order) {
-        return function() {
-            let items = Array.from(document.querySelectorAll('.item-product'));
-            items.sort(function(a, b) {
-                let nameA = a.querySelector('p:nth-child(5)').textContent;
-                let nameB = b.querySelector('p:nth-child(5)').textContent;
-                return order === 'a' ? nameA.localeCompare(nameB) : nameB.localeCompare(nameA);
-            });
-            sortProduct(items);
-        };
-    }
-    
-    function sortPrice(order) {
-        return function() {
-            let items = Array.from(document.querySelectorAll('.item-product'));
-            items.sort(function(a, b) {
-                let priceA = parseFloat(a.getAttribute('data-price'));
-                let priceB = parseFloat(b.getAttribute('data-price'));
-                return order === 'min' ? priceA - priceB : priceB - priceA;
-            });
-            sortProduct(items);
-        };
-    }
-    
-    function sortDate(order) {
-        return function() {
-            let items = Array.from(document.querySelectorAll('.item-product'));
-            items.sort(function(a, b) {
-                let dateA = new Date(a.getAttribute('data-created'));
-                let dateB = new Date(b.getAttribute('data-created'));
-                return order === 'old' ? dateA - dateB : dateB - dateA;
-            });
-            sortProduct(items);
-        };
-    }
-
-    function sortProduct(items) {
-        let productDisplay = document.getElementById('product-display');
-        items.forEach(item => {
-            productDisplay.appendChild(item);
-        });
-        let itemGroups = document.querySelectorAll('.item-group');
-        if (itemGroups.length > 0) {
-            itemGroups.forEach(item => {
-                item.parentNode.removeChild(item);
-            })
-        }
-    }
-
 </script>
 <script src="{% static 'js/modal.js' %}"></script>
 </body>
