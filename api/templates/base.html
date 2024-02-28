@@ -90,8 +90,8 @@
     </div>
 </div>
 <!-- End Sidebar and Main Content -->
-<div class="d-flex justify-content-center align-items-center position-fixed bottom-0 start-50 translate-middle-x my-3" style="max-width: 80%;">
-    <div class="compare-bar rounded-4 d-flex bg-danger text-white p-3 align-items-center justify-content-center" style="height: 10%;">
+<div class="compare-bar d-flex justify-content-center align-items-center position-fixed bottom-0 start-50 translate-middle-x my-3" style="max-width: 80%;">
+    <div class="compare-item rounded-4 d-flex bg-danger text-white p-3 align-items-center justify-content-center" style="height: 10%;">
         <p class="border-start border-end border-white rounded p-3 mb-0">Floating Item</p>
         <p class="border-start border-end border-white rounded p-3 mb-0">Floating Item</p>
         <p class="border-start border-end border-white rounded p-3 mb-0">Floating Item</p>
@@ -370,7 +370,15 @@
         let icon = document.createElement('i');
         icon.className = "fa-regular fa-pen-to-square fa-2x";
         btn.appendChild(icon);
-        
+        // Create a Compare Button
+        let compareButton = document.createElement('button');
+        compareButton.className = 'compare-info btn btn-outline-danger position-absolute bottom-0 end-0';
+        compareButton.setAttribute('title', 'Compare');
+        compareButton.setAttribute('aria-label', 'Compare');
+        let compareIcon = document.createElement('i');
+        compareIcon.className = "fa-solid fa-list-check fa-xl";
+        compareButton.appendChild(compareIcon);
+
         // Append the div to the list
         item_div.appendChild(p3);
         item_div.appendChild(p1);
@@ -383,6 +391,7 @@
         item_div.appendChild(p9);
         item_div.appendChild(divUpdate); // Last Edited + Update Button
         item_div.appendChild(btn); // Edit Button
+        item_div.appendChild(compareButton); // Compare Button
         
         return item_div; // Return the new div to group
     }
