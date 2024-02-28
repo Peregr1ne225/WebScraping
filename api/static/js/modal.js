@@ -148,3 +148,60 @@ function setNewData(data) {
     if(document.getElementsByClassName('item-group').length > 0)
         changeGroup(data.ProductID, data.SimilarGroup);
 }
+let compareNow = document.getElementById(`compare-now`);
+compareNow.addEventListener('click', function() {
+    let compareItems = document.querySelectorAll('.compare-bar .compare-items .compare-item');
+    if(compareItems.length < 2) {
+        alert('You need at least 2 items to compare');
+        return;
+    }
+    let modal = new bootstrap.Modal(document.getElementById('compareModal'));
+    // Open the modal
+    modal.show();
+});
+
+let compareModal = document.getElementById('compareModal');
+compareModal.addEventListener('show.bs.modal', function() {
+    let compareItems = document.querySelectorAll('.compare-bar .compare-items .compare-item');
+    let compareModalBody = compareModal.querySelector('.modal-body');
+    compareModalBody.innerHTML = '';
+    compareItems.forEach(item => {
+        let full = item.id;
+        let productId = full.split('-')[1];
+        let url = `/api/product/${productId}/`;
+        fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            let product = compareProduct(data);
+            compareModalBody.appendChild(product);
+        });
+    });
+});
+function compareProduct(data){
+    let product_div = document.createElement('div');
+    product_div.className = 'compare-part';
+    let p1 = document.createElement('p'); // pic
+    p1.innerHTML = `Picture: ${data.PicURL}`;
+    let p2 = document.createElement('p'); // name
+    p2.innerHTML = `Product Name : ${data.ProductName}`;
+    let p3 = document.createElement('p'); // brand
+    p3.innerHTML = `Brand: ${data.BrandName}`;
+    let p4 = document.createElement('p'); // description
+    p4.className = 'text-break';
+    p4.innerHTML = `Descpiption: ${data.Description}`;
+    let p5 = document.createElement('p'); // price
+    p5.innerHTML = `Price: ${data.Price}`;
+    let p6 = document.createElement('p'); //retailer
+    p6.innerHTML = `Retailer: ${data.RetailName}`;
+    let p7 = document.createElement('p'); //url
+    p7.innerHTML = `URL: ${data.URL}`;
+    
+    product_div.appendChild(p1);
+    product_div.appendChild(p2);
+    product_div.appendChild(p3);
+    product_div.appendChild(p4);
+    product_div.appendChild(p5);
+    product_div.appendChild(p6);
+    product_div.appendChild(p7);
+    return product_div;
+}

@@ -214,3 +214,9 @@ h1 {
 #dropdownSortButton.dropdown-toggle::after {
     display: none;
 }
+
+.compare-part{
+    flex: 0 0 20%;
+    max-width: 20%;
+    word-wrap: break-word;
+}

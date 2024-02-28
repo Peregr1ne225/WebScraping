@@ -21,7 +21,7 @@
 <div class="container-fluid">
     <div class="row">
         <!-- Sidebar -->
-        <div class="col-md-2 sidebar vh-auto md-vh-100 sticky-top" style="top: 72px;">
+        <div class="col-md-2 sidebar vh-auto md-vh-100 sticky-top" style="top: 5%;">
             <!-- Add Category from javaScript-->
             <p> Category </p>
             <div id="dynamicCate" class="list-group list-group-flush list-of-cate">
@@ -85,19 +85,18 @@
             
             {% endblock content %}
             </div>
-        </div>
+        </div>om
         <!-- End Main Content -->
     </div>
 </div>
 <!-- End Sidebar and Main Content -->
-<div class="compare-bar d-flex justify-content-center align-items-center position-fixed bottom-0 start-50 translate-middle-x my-3" style="max-width: 80%;">
-    <div class="compare-item rounded-4 d-flex bg-danger text-white p-3 align-items-center justify-content-center" style="height: 10%;">
-        <p class="border-start border-end border-white rounded p-3 mb-0">Floating Item</p>
-        <p class="border-start border-end border-white rounded p-3 mb-0">Floating Item</p>
-        <p class="border-start border-end border-white rounded p-3 mb-0">Floating Item</p>
-        <p class="border-start border-end border-white rounded p-3 mb-0">Floating Item</p>
+<div class="compare-bar justify-content-center align-items-center position-fixed bottom-0 start-50 translate-middle-x my-3" style="display:none;">
+    <div class="compare-items rounded-4 d-flex bg-danger text-white p-3 align-items-center justify-content-center">
+        <!-- javaScript add -->
     </div>
-    <button class="btn btn-danger ms-3 rounded-circle p-0 d-flex align-items-center justify-content-center" style="width: 5rem; height: 5rem;">Compare It</button>
+    <button id="compare-now"class="btn btn-danger ms-3 rounded-circle p-0 d-flex align-items-center justify-content-center" style="width: 4rem; height: 4rem;">
+        <i class="fas fa-balance-scale fa-xl"></i>
+    </button>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/nouislider@14.6.3/distribute/nouislider.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
@@ -258,6 +257,7 @@
         let icon = document.createElement('i');
         icon.className = "fa-regular fa-pen-to-square fa-2x";
         btn.appendChild(icon);
+
         // Create a Compare Button
         let compareButton = document.createElement('button');
         compareButton.className = 'compare-info btn btn-outline-danger position-absolute bottom-0 end-0';
@@ -266,7 +266,25 @@
         let compareIcon = document.createElement('i');
         compareIcon.className = "fa-solid fa-list-check fa-xl";
         compareButton.appendChild(compareIcon);
+        compareButton.addEventListener('click', function() {
+            let compareBar = document.querySelector('.compare-bar');
+            let compareItems = compareBar.querySelector('.compare-items');
+            let compareItem = createCompareItem(data);
+            console.log(compareItems);
 
+            for (let i = 0; i < compareItems.childElementCount; i++) {
+                if(compareItems.children[i].id === compareItem.id) {
+                    alert('This item is already in the compare bar');
+                    return;
+                }
+            }
+            compareBar.style.display = 'flex';
+            if(compareItems.childElementCount >= 5) {
+                alert('You can only compare up to 5 items');
+                return;
+            }
+            compareItems.appendChild(compareItem);
+        });
         // Append the div to the list
         item_div.appendChild(p3);
         item_div.appendChild(p1);
@@ -283,12 +301,41 @@
         
         return item_div; // Return the new div to group
     }
+    // compare bar item
+    function createCompareItem(data) {
+        let compareItem = document.createElement('div');
+        compareItem.id = `compare-${data.ProductID}`;
+        compareItem.className = 'compare-item position-relative flex-fill border-start border-end border-white rounded p-3';
+        let removeCompareButton = document.createElement('button');
+        removeCompareButton.className = 'remove-compare btn btn-danger position-absolute top-0 start-100 translate-middle';
+        removeCompareButton.setAttribute('title', 'Remove');
+        removeCompareButton.setAttribute('aria-label', 'Remove');
+        removeCompareButton.addEventListener('click', function() {
+            this.parentElement.remove();
+            let compareItems = document.querySelector('.compare-items');
+            if(compareItems.childElementCount === 0) {
+                compareItems.parentElement.style.display = 'none';
+            }
+        });
+        let removeIcon = document.createElement('i');
+        removeIcon.className = 'fas fa-trash';
+        removeCompareButton.appendChild(removeIcon);
+        compareItem.appendChild(removeCompareButton);
+        //Add Details
+        let compareData = document.createElement('p');
+        compareData.className = 'mb-0 text-truncate';
+        compareData.textContent = data.ProductID;
+
+        compareItem.appendChild(compareData);
+        return compareItem;
+    }
 </script>
 <script src="{% static 'js/slider.js' %}"></script>
 {% block script %}
 {% endblock script %}
 <script src="{% static 'js/sort.js' %}"></script>
 <script>
+    // Sort Dropdown
     window.addEventListener('load', function() {
         let sortDropdown = document.querySelectorAll('#sortDropdown .dropdown-item');
         sortDropdown.forEach(item => {
