@@ -130,24 +130,7 @@ function responseModal(data) {
     myModal.show();
     document.getElementById("loadingScreen").style.display = "none";
 }
-//Data from response to update the product
-function setNewData(data) {
-    let productDiv = document.getElementById(data.ProductID);
 
-    productDiv.children[4].textContent = `Product Name : ${data.ProductName}`;
-    productDiv.children[7].textContent = `Stock: ${data.Stock}`;
-    productDiv.children[8].textContent = `Price: ${data.Price}`;
-
-    productDiv.dataset.price = data.Price;
-    productDiv.dataset.score = data.SimilarScore;
-    productDiv.dataset.group = data.SimilarGroup;
-
-    let productEdit = productDiv.querySelector('.edit-update p');
-    productEdit.textContent = `Last Edited: ${data.DateEdit}`;
-    
-    if(document.getElementsByClassName('item-group').length > 0)
-        changeGroup(data.ProductID, data.SimilarGroup);
-}
 let compareNow = document.getElementById(`compare-now`);
 compareNow.addEventListener('click', function() {
     let compareItems = document.querySelectorAll('.compare-bar .compare-items .compare-item');

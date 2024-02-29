@@ -149,25 +149,6 @@ h1 {
     color: #000;
 }
 
-.item-group {    
-    margin: 10px auto;
-    padding: 10px;
-}
-
-.item-product{
-    margin: 5px; /* Add some margin to create space between items */
-    padding: 5px;
-}
-
-.item-group .item-product+.item-product{
-    border-top: 2px dotted #9aa2ee79;
-    margin-top: -1px; /* Add a border to the top of all p elements except the first one */
-}
-
-.item-group p{
-    margin: 0;
-}
-
 .nested-item{
     padding-left: 20px;
 }

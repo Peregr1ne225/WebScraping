@@ -1,23 +1,6 @@
 {% extends "base.html" %}
 {% block title %} Home {% endblock title %}
-{% block brand %}
-<div id="dynamicBrand" class="list-group list-group-flush list-of-brand">
-    <a href="#item-1" class="list-group-item list-of-brand">
-        Item 1 
-    </a>
-    <a href="#item-2" class="list-group-item list-of-brand">
-        Item 2 
-    </a>
-    <a href="#item-3" class="list-group-item list-of-brand" > Item 3 </a>
-</div>
-{% endblock brand %}
 {% block content %}
-    <div>
-        <div class="d-flex justify-content-between align-items-center" >
-            <p>Product ID</p>
-            <p>Product Name</p>
-        </div>
-    </div>
     
 {% endblock content %}
 {% block script %}
@@ -39,7 +22,7 @@
         for(let group of groupset){
             var item_display = document.getElementById('product-display');
             var item_group = document.createElement('div');
-            item_group.className = 'item-group border border-primary';
+            item_group.className = 'item-group border border-primary my-2';
             item_group.id = `group-${group}`;
             try{
                 let response = await fetch('/api/product/?group='+group);
@@ -81,7 +64,7 @@
         else {
             let item_display = document.getElementById('product-display');
             let item_group = document.createElement('div');
-            item_group.className = 'item-group border border-primary';
+            item_group.className = 'item-group border border-primary my-2';
             item_group.id = `group-${group}`;
             item_group.appendChild(item_id);
             item_display.appendChild(item_group);

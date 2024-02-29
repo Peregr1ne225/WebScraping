@@ -25,31 +25,12 @@
             <!-- Add Category from javaScript-->
             <p> Category </p>
             <div id="dynamicCate" class="list-group list-group-flush list-of-cate">
-                <div class="list-group-item d-flex align-items-center justify-content-between list-of-cate">
-                    <a href="#item-1" class="flex-grow-1" > Item 1 </a>
-                    <a class="expandbutton ms-2" data-bs-toggle="collapse" href="#item-test1" id="button-test1" onclick="toggleIcon(this.id)"> <!-- Added data-bs-toggle and href attributes to enable collapse -->
-                        <i class="fas fa-plus"></i>
-                    </a>
-                </div> 
-                <div class="list-group collapse list-group-margin ms-3 list-group-flush" id="item-test1">
-                    <a href="#" class="list-group-item nested-item list-of-cate">Subitem 1</a>
-                    <div class="list-group-item d-flex align-items-center justify-content-between list-of-cate">
-                        <a href="#item-2" class="flex-grow-1" > Item 1 </a>
-                        <a class="expandbutton ms-2" data-bs-toggle="collapse" href="#item-test2" id="button-test2" onclick="toggleIcon(#button-1)"> <!-- Added data-bs-toggle and href attributes to enable collapse -->
-                            <i class="fas fa-plus"></i>
-                        </a>        
-                    </div>
-                    <div class="list-group collapse list-group-margin ms-3 list-group-flush" id="#item-test2">
-                        <a href="#" class="list-group-item nested-item list-of-cate">Subitem 2</a>
-                    </div>
-                </div>
+                
             </div>
             <!-- Add Brand from javaScript-->
             <p> Brands </p>
             <div id="dynamicBrand" class="list-group list-group-flush list-of-brand">
-                {% block brand %}
-            
-                {% endblock brand %}
+                
             </div>
             <!-- Price Slider -->
             <div class="price-min-max d-flex align-items-center justify-content-between no-select">
@@ -65,8 +46,7 @@
             <div id="loadingScreen" style="position: fixed; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 9999;">
                 <p>Loading...</p>
             </div>
-            <div id="product-display" class="w-75 mx-auto">
-                <div class="dropdown sort-item d-flex justify-content-end">
+            <div class="dropdown sort-item d-flex justify-content-end">
                     <button id="dropdownSortButton" class="dropdown-toggle btn btn-outline-secondary" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" aria-label="Sort">
                         Sorting
                         <i class="fa-solid fa-sort"></i>
@@ -80,12 +60,14 @@
                         <li><button class="dropdown-item">Date: Old -&gt; New</button></li>
                         <li><button class="dropdown-item">Date: New -&gt; Old</button></li>
                     </ul>
-                </div>
+            </div>
+            <div id="product-display" class="w-75 mx-auto d-flex justify-content-around flex-wrap flex-column">
+                
             {% block content %}
             
             {% endblock content %}
             </div>
-        </div>om
+        </div>
         <!-- End Main Content -->
     </div>
 </div>
@@ -180,11 +162,32 @@
     }
 </script>
 <script>
-// Add Product to Display
+    //Data from response to update the product
+    function setNewData(data) {
+        let productDiv = document.getElementById(data.ProductID);
+
+        productDiv.children[4].textContent = `Product Name : ${data.ProductName}`;
+        productDiv.children[7].textContent = `Stock: ${data.Stock}`;
+        productDiv.children[8].textContent = `Price: ${data.Price}`;
+
+        productDiv.dataset.price = data.Price;
+        productDiv.dataset.score = data.SimilarScore;
+        productDiv.dataset.group = data.SimilarGroup;
+
+        let productEdit = productDiv.querySelector('.edit-update p');
+        productEdit.textContent = `Last Edited: ${data.DateEdit}`;
+
+        if(document.getElementsByClassName('item-group').length > 0)
+            changeGroup(data.ProductID, data.SimilarGroup);
+    }
+    // Add Product to Display
     function addProduct(data) {
         // Create a new div for each item
+        let card = document.createElement('div');
+        card.className = "item-product card border-primary d-flex flex-column m-1";
+        card.style.maxHeight = "400px";
         let item_div = document.createElement('div');
-        item_div.className = 'item-product d-flex flex-column position-relative';
+        item_div.className = 'item-product d-flex flex-column position-relative flex-grow-1';
         item_div.id = data.ProductID;
         item_div.setAttribute("data-price", data.Price);
         item_div.setAttribute("data-score", data.SimilarScore);
@@ -219,7 +222,7 @@
         divUpdate.className = 'edit-update d-flex align-items-center justify-content-start';
         // Create update button
         let updateButton = document.createElement('button');
-        updateButton.className = "btn btn-outline-success update-info me-3";
+        updateButton.className = "update-button btn btn-outline-success me-3";
         updateButton.setAttribute("aria-label", "Update");
         // Create icon for update button
         let update_icon = document.createElement('i');
@@ -250,7 +253,7 @@
         divUpdate.appendChild(p_edit)
         // Create a Edit Modal Button
         let btn = document.createElement('button');
-        btn.className = 'btn btn-outline-success edit-info position-absolute top-0 end-0';
+        btn.className = 'edit-button btn btn-outline-success position-absolute top-0 end-0';
         btn.setAttribute('data-bs-toggle', 'modal');
         btn.setAttribute('data-bs-target', '#editModal');
         btn.setAttribute('title', 'Edit');
@@ -261,7 +264,7 @@
 
         // Create a Compare Button
         let compareButton = document.createElement('button');
-        compareButton.className = 'compare-info btn btn-outline-danger position-absolute bottom-0 end-0';
+        compareButton.className = 'compare-button btn btn-outline-danger position-absolute bottom-0 end-0';
         compareButton.setAttribute('title', 'Compare');
         compareButton.setAttribute('aria-label', 'Compare');
         let compareIcon = document.createElement('i');
