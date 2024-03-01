@@ -177,8 +177,6 @@
         productDiv.dataset.price = data.Price;
         productDiv.dataset.score = data.SimilarScore;
         productDiv.dataset.group = data.SimilarGroup;
-        if(document.getElementsByClassName('item-group').length > 0)
-            changeGroup(data.ProductID, data.SimilarGroup);
     }
     // Add Product to Display
     function addProduct(data, parent) {
