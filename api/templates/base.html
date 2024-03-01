@@ -15,6 +15,7 @@
     <title>{% block title %}{% endblock title%}</title>
 </head>
 <body>
+{% include "login.html" %}
 {% include "modal.html" %}
 {% include "navbar.html" %}
 <!-- Sidebar and Main Content -->
@@ -82,11 +83,31 @@
 </div>
 <script src="https://cdn.jsdelivr.net/npm/nouislider@14.6.3/distribute/nouislider.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="{% static 'js/navbar.js' %}"></script>
 <script src="{% static 'js/score.js' %}"></script>
 <script>
+    
+    $(document).ready(function() {
+        $(document).on('click', '#logoutButton', function(e) {
+            // prevent the default action
+            e.preventDefault();
+
+            console.log(document.cookie);  // Print cookies before deletion
+
+            // delete the token
+            document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+
+            console.log(document.cookie);  // Print cookies after deletion
+
+            // reload the page to update the navbar
+            location.reload();
+        });
+    });
+</script>
+<script>
     // load Category from API
-    window.onload = function() {
+    window.addEventListener('load', function() {
         let url = new URL(window.location.href);
         if (url.pathname && url.pathname !== "/") {
             cateIncrease(url.pathname);
@@ -104,7 +125,7 @@
         } catch (error) {
             console.log(error);
         }
-    }
+    });
     // Get URL for category
     function getUrl(id) {
         return `{% url 'cate' id=123 %}`.replace('123', id);
@@ -181,6 +202,7 @@
     // Add Product to Display
     function addProduct(data, parent) {
         // Create a new div for each item
+        let token = document.cookie.split('; ').find(row => row.startsWith('token'));
         let card_product = document.createElement('div');
         card_product.id = data.ProductID;
         card_product.className = "item-product card border-primary m-1";
@@ -189,6 +211,9 @@
         card_product.setAttribute("data-group", data.SimilarGroup);
         card_product.setAttribute("data-created", data.DateCreate);
         //src=${data.PicURL}
+        let editButton = token ? `<button class="edit-button btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#editModal" title="Edit" aria-label="Edit">
+            <i class="fa-regular fa-pen-to-square"></i>
+        </button>` : '';
         card_product.innerHTML = `
         <div class="row g-0">
             <div class="col-md-3">
@@ -198,9 +223,7 @@
                 <div class="card-header bg-transparent d-flex justify-content-start align-items-center">
                     <p class="fw-bold my-0 me-1">Product Name: </p>
                     <p class="p-name flex-grow-1 m-0">${data.ProductName}</p>
-                    <button class="edit-button btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#editModal" title="Edit" aria-label="Edit">
-                        <i class="fa-regular fa-pen-to-square"></i>
-                    </button>
+                    ${editButton}
                 </div>
                 <div class="card-body pt-0">
                     <div class="border-bottom my-2">
@@ -237,6 +260,7 @@
             </div>
         </div>`;
         parent.appendChild(card_product);
+        
         // Add event listener for every compare button
         let compareButton = card_product.querySelector('.compare-button');
         compareButton.addEventListener('click', function() {

@@ -8,22 +8,17 @@ from ScrapScripts.JIB import get_sub as jib
 from ScrapScripts.Banana import get_path as banana
 import threading
 from django.http import HttpResponse
-
 # Create your views here.
-from urllib.parse import urljoin
-from django.urls import reverse
-from django.http import JsonResponse
 from django.core import serializers as d_serializers
 from django.shortcuts import redirect
 from .models import *
 from .serializers import *
 from rest_framework import permissions, viewsets
-from rest_framework import pagination, status, exceptions
+from rest_framework import pagination, status
 from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication
 import requests
 import json
-
 
 class NoLimitPagination(pagination.PageNumberPagination):
     page_size = None
