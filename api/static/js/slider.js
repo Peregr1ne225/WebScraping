@@ -41,39 +41,32 @@ function sliderSetPrice(price) {
         } else {
             document.getElementById('min-value').innerHTML = values[handle];
         }
+        
     });
-    // Change Item Range
     slider.noUiSlider.on('change.one', function (values, handle) {
         let items_div = document.querySelectorAll('div[data-price]');
         items_div.forEach(item_price => {
             let price = Number(item_price.dataset.price);
+            let parent_group = item_price.closest('.item-group'); // Find the nearest .item-group ancestor
+            let corresponding_tab = document.querySelector(`#${item_price.id}-tab`); // Find the corresponding tab button
             if(price >= values[0] && price <= values[1]) {
                 item_price.classList.remove('d-none');
-                item_price.classList.add('d-flex');
+                if (corresponding_tab) corresponding_tab.classList.remove('d-none'); // Show the tab button
             }
             else {
-                item_price.classList.remove('d-flex');
                 item_price.classList.add('d-none');
+                if (corresponding_tab) corresponding_tab.classList.add('d-none'); // Hide the tab button
             }
-            addDNoneToItemGroup();
-        });
-    });
-    // Group hidden
-    function addDNoneToItemGroup() {
-        let itemGroups = document.querySelectorAll(".item-group");
-        itemGroups.forEach(itemGroup => {
-            let children = itemGroup.children;
-            let allHaveDNone = true;
-            for (let i = 0; i < children.length; i++) {
-                if (!children[i].classList.contains("d-none")) {
-                    allHaveDNone = false;
-                    break;
+            // If parent_group exists, check if all child divs with data-price in this group are hidden
+            if (parent_group) {
+                let allHidden = Array.from(parent_group.querySelectorAll('div[data-price]')).every(div => div.classList.contains('d-none'));
+                if (allHidden) {
+                    // If all are hidden, hide the entire group
+                    parent_group.classList.add('d-none');
+                } else {
+                    // If not all are hidden, show the group
+                    parent_group.classList.remove('d-none');
                 }
             }
-            if (allHaveDNone) {
-                itemGroup.classList.add("d-none");
-            } else {
-                itemGroup.classList.remove("d-none");
-            }
         });
-    }
+    });

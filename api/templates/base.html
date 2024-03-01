@@ -52,7 +52,7 @@
                         <i class="fa-solid fa-sort"></i>
                     </button>
                     <ul id="sortDropdown" class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownSortButton">
-                        <li><button class="dropdown-item">Group (Default)</button></li>
+                        <li><button class="dropdown-item">Default</button></li>
                         <li><button class="dropdown-item">Name: A -&gt; Z</button></li>
                         <li><button class="dropdown-item">Name: Z -&gt; A</button></li>
                         <li><button class="dropdown-item">Price: Min -&gt; Max</button></li>
@@ -184,7 +184,6 @@
         let card_product = document.createElement('div');
         card_product.id = data.ProductID;
         card_product.className = "item-product card border-primary m-1";
-        card_product.style.maxHeight = "400px";
         card_product.setAttribute("data-price", data.Price);
         card_product.setAttribute("data-score", data.SimilarScore);
         card_product.setAttribute("data-group", data.SimilarGroup);

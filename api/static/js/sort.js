@@ -2,8 +2,8 @@ function sortName(order) {
     return function() {
         let items = Array.from(document.querySelectorAll('.item-product'));
         items.sort(function(a, b) {
-            let nameA = a.querySelector('p:nth-child(5)').textContent;
-            let nameB = b.querySelector('p:nth-child(5)').textContent;
+            let nameA = a.querySelector('.p-name').textContent;
+            let nameB = b.querySelector('.p-name').textContent;
             return order === 'a' ? nameA.localeCompare(nameB) : nameB.localeCompare(nameA);
         });
         sortProduct(items);
@@ -37,6 +37,8 @@ function sortDate(order) {
 function sortProduct(items) {
     let productDisplay = document.getElementById('product-display');
     items.forEach(item => {
+        // Remove the 'fade' class from the item
+        item.classList.remove('fade');
         productDisplay.appendChild(item);
     });
     let itemGroups = document.querySelectorAll('.item-group');
