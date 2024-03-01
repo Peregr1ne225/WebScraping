@@ -1,27 +1,20 @@
 // Edit Modal
 function onShow (event) {
-    // Get the clicked element and its parent
+// Get the clicked element and its parent
     let clickedElement = event.relatedTarget;
-    let parentElement = clickedElement.parentElement;
-    
+    let parentElement = clickedElement.closest('.item-product');
     // Get the data from the parent element
-    let nameText = parentElement.children[4].textContent;
-    let priceText = parentElement.children[8].textContent;
-    let descriptionText = parentElement.children[6].textContent;            
-
-    // Set data for the modal
+    let productName = parentElement.querySelector('.p-name').textContent;
+    let productPrice = parentElement.querySelector('.p-price').textContent;
+    let productDescription = parentElement.querySelector('.p-desc').textContent;
+    // Get the product id
     let productId = parentElement.id;
-    let productName = nameText.substring(nameText.indexOf(':') + 1).trim();
-    let productPrice = priceText.substring(priceText.indexOf(':') + 1).trim();
-    let productDescription = descriptionText.substring(descriptionText.indexOf(':') + 1).trim();
-
     // Get the modal elements
     let modalTitle = document.querySelector('#editModal .modal-title')
     let modalBodyId = document.querySelector('#editModal .modal-body #productId')
     let modalBodyName = document.querySelector('#editModal .modal-body #productName')
     let modalBodyPrice = document.querySelector('#editModal .modal-body #productPrice')
     let modalBodyDescription = document.querySelector('#editModal .modal-body #productDescription')
-    
     // Set the data in the modal
     modalTitle.textContent = "Edit Product: " + productId;
     modalBodyId.value = productId;
@@ -146,7 +139,7 @@ compareNow.addEventListener('click', function() {
 let compareModal = document.getElementById('compareModal');
 compareModal.addEventListener('show.bs.modal', function() {
     let compareItems = document.querySelectorAll('.compare-bar .compare-items .compare-item');
-    let compareModalBody = compareModal.querySelector('.modal-body');
+    let compareModalBody = compareModal.querySelector('.modal-body .card-group');
     compareModalBody.innerHTML = '';
     compareItems.forEach(item => {
         let full = item.id;
@@ -161,30 +154,38 @@ compareModal.addEventListener('show.bs.modal', function() {
     });
 });
 function compareProduct(data){
-    let product_div = document.createElement('div');
-    product_div.className = 'compare-part';
-    let p1 = document.createElement('p'); // pic
-    p1.innerHTML = `Picture: ${data.PicURL}`;
-    let p2 = document.createElement('p'); // name
-    p2.innerHTML = `Product Name : ${data.ProductName}`;
-    let p3 = document.createElement('p'); // brand
-    p3.innerHTML = `Brand: ${data.BrandName}`;
-    let p4 = document.createElement('p'); // description
-    p4.className = 'text-break';
-    p4.innerHTML = `Descpiption: ${data.Description}`;
-    let p5 = document.createElement('p'); // price
-    p5.innerHTML = `Price: ${data.Price}`;
-    let p6 = document.createElement('p'); //retailer
-    p6.innerHTML = `Retailer: ${data.RetailName}`;
-    let p7 = document.createElement('p'); //url
-    p7.innerHTML = `URL: ${data.URL}`;
-    
-    product_div.appendChild(p1);
-    product_div.appendChild(p2);
-    product_div.appendChild(p3);
-    product_div.appendChild(p4);
-    product_div.appendChild(p5);
-    product_div.appendChild(p6);
-    product_div.appendChild(p7);
-    return product_div;
+    let compareCard = document.createElement('div');
+    compareCard.className = 'card compare-part';
+    compareCard.innerHTML = `
+        <img src="https://img.advice.co.th/images_nas/pic_product4/A0147250/A0147250_1.jpg" class="card-img-top" alt="...">
+        <div class="card-body">
+            <h5 class="card-title"> <strong>Product Name :</strong>${data.ProductName}</h5>
+            <div class="d-flex border-bottom my-2">
+                <p class="card-text fw-bold me-1 mb-1">Brand: </p>
+                <p class="card-text mb-1">${data.BrandName}</p>
+            </div>
+            <div class="border-bottom my-2">
+                <p class="card-text fw-bold mb-1 align-self-center">Description:</p>
+                <p class="card-text">${data.Description}</p>    
+            </div>
+            <div class="d-flex border-bottom my-2">
+                <p class="card-text fw-bold me-1 mb-1">Stock: </p>
+                <p class="card-text mb-1">${data.Stock}</p>
+            </div>
+            <div class="d-flex border-bottom my-2">
+                <p class="card-text fw-bold me-1 mb-1">Price: </p>
+                <p class="card-text mb-1">${data.Price}</p>
+            </div>
+            <div class="my-2">
+                <div class="d-flex">
+                    <p class="fw-bold me-1 mb-1">Retail:</p>
+                    <p class="card-text me-1 mb-1">${data.RetailName}</p>
+                </div>
+                <a role="button" href="${data.URL}" class="btn btn-primary">More Details</a>
+            </div>
+        </div>
+        <div class="card-footer">
+            <small class="m-0">Last Edited: ${data.DateEdit}</small>
+        </div>`
+    return compareCard;
 }

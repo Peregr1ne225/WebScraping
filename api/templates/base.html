@@ -165,111 +165,83 @@
     //Data from response to update the product
     function setNewData(data) {
         let productDiv = document.getElementById(data.ProductID);
-
-        productDiv.children[4].textContent = `Product Name : ${data.ProductName}`;
-        productDiv.children[7].textContent = `Stock: ${data.Stock}`;
-        productDiv.children[8].textContent = `Price: ${data.Price}`;
-
+        // Update product name
+        productDiv.querySelector('.p-name').textContent = data.ProductName;
+        // Update stock
+        productDiv.querySelector('.p-stock').textContent = data.Stock;
+        // Update price
+        productDiv.querySelector('.p-price').textContent = data.Price;
+        // Update last edited date
+        productDiv.querySelector('.p-edit').textContent = `Last Edited: ${data.DateEdit}`;
+        // Update data attributes
         productDiv.dataset.price = data.Price;
         productDiv.dataset.score = data.SimilarScore;
         productDiv.dataset.group = data.SimilarGroup;
-
-        let productEdit = productDiv.querySelector('.edit-update p');
-        productEdit.textContent = `Last Edited: ${data.DateEdit}`;
-
         if(document.getElementsByClassName('item-group').length > 0)
             changeGroup(data.ProductID, data.SimilarGroup);
     }
     // Add Product to Display
-    function addProduct(data) {
+    function addProduct(data, parent) {
         // Create a new div for each item
-        let card = document.createElement('div');
-        card.className = "item-product card border-primary d-flex flex-column m-1";
-        card.style.maxHeight = "400px";
-        let item_div = document.createElement('div');
-        item_div.className = 'item-product d-flex flex-column position-relative flex-grow-1';
-        item_div.id = data.ProductID;
-        item_div.setAttribute("data-price", data.Price);
-        item_div.setAttribute("data-score", data.SimilarScore);
-        item_div.setAttribute("data-group", data.SimilarGroup);
-        item_div.setAttribute("data-created", data.DateCreate);
-        // Create a new paragraph for each property
-        let p1 = document.createElement('p'); // pic
-        p1.innerHTML = `URL: ${data.URL}`;
-        let p2 = document.createElement('p'); // link
-        p2.innerHTML = `Picture: ${data.PicURL}`;
-        let p3 = document.createElement('p'); // id
-        p3.innerHTML = `ID: ${data.ProductID}`;
-        p3.className = 'text-uppercase fw-bold w-25';
-        let p4 = document.createElement('p'); // retailer
-        p4.innerHTML = `Retailer: ${data.RetailName}`;
-        let p5 = document.createElement('p'); // product name
-        p5.innerHTML = `Product Name : ${data.ProductName}`;
-        p5.className = 'text-break flex-shrink-1';
-        let p6 = document.createElement('p'); // brand
-        p6.innerHTML = `Brand: ${data.BrandName}`;            
-        let p7 = document.createElement('p'); // description
-        p7.innerHTML = `Descpiption: ${data.Description}`;
-        let p8 = document.createElement('p'); // stock
-        p8.innerHTML = `Stock: ${data.Stock}`;
-        let p9 = document.createElement('p'); // price
-        p9.innerHTML = `Price: ${data.Price}`;
-        
-        //Last Edited + Update Button
-        let p_edit = document.createElement('p'); // date edit
-        p_edit.innerHTML = `Last Edited: ${data.DateEdit}`;
-        let divUpdate = document.createElement('div');
-        divUpdate.className = 'edit-update d-flex align-items-center justify-content-start';
-        // Create update button
-        let updateButton = document.createElement('button');
-        updateButton.className = "update-button btn btn-outline-success me-3";
-        updateButton.setAttribute("aria-label", "Update");
-        // Create icon for update button
-        let update_icon = document.createElement('i');
-        update_icon.className = "fa-solid fa-rotate fa-lg";
-        updateButton.appendChild(update_icon);
-        // Add event listener for every update button
-        updateButton.addEventListener('click', function() {
-            document.getElementById("loadingScreen").style.display = "block";
-            console.log("Wait")
-            let productId = this.parentElement.parentElement.id;
-            let url = `/api/update/${productId}/`;
-            try {
-                fetch(url)
-                .then(response => response.json())
-                .then(data => {
-                    console.log(data);
-                    setNewData(data);
-                    document.getElementById("loadingScreen").style.display = "none";
-                    console.log("Done")
-                })
-            } catch (error) {
-                console.log(error);
-            }
-        });
-        // Append the button to the div
-        divUpdate.appendChild(updateButton);
-        // Set last edited to update div with button
-        divUpdate.appendChild(p_edit)
-        // Create a Edit Modal Button
-        let btn = document.createElement('button');
-        btn.className = 'edit-button btn btn-outline-success position-absolute top-0 end-0';
-        btn.setAttribute('data-bs-toggle', 'modal');
-        btn.setAttribute('data-bs-target', '#editModal');
-        btn.setAttribute('title', 'Edit');
-        btn.setAttribute('aria-label', 'Edit');
-        let icon = document.createElement('i');
-        icon.className = "fa-regular fa-pen-to-square fa-2x";
-        btn.appendChild(icon);
-
-        // Create a Compare Button
-        let compareButton = document.createElement('button');
-        compareButton.className = 'compare-button btn btn-outline-danger position-absolute bottom-0 end-0';
-        compareButton.setAttribute('title', 'Compare');
-        compareButton.setAttribute('aria-label', 'Compare');
-        let compareIcon = document.createElement('i');
-        compareIcon.className = "fa-solid fa-list-check fa-xl";
-        compareButton.appendChild(compareIcon);
+        let card_product = document.createElement('div');
+        card_product.id = data.ProductID;
+        card_product.className = "item-product card border-primary m-1";
+        card_product.style.maxHeight = "400px";
+        card_product.setAttribute("data-price", data.Price);
+        card_product.setAttribute("data-score", data.SimilarScore);
+        card_product.setAttribute("data-group", data.SimilarGroup);
+        card_product.setAttribute("data-created", data.DateCreate);
+        //src=${data.PicURL}
+        card_product.innerHTML = `
+        <div class="row g-0">
+            <div class="col-md-3">
+                <img src=# class="img-fluid rounded-start" alt="Product Image">
+            </div>
+            <div class="col-md-9">
+                <div class="card-header bg-transparent d-flex justify-content-start align-items-center">
+                    <p class="fw-bold my-0 me-1">Product Name: </p>
+                    <p class="p-name flex-grow-1 m-0">${data.ProductName}</p>
+                    <button class="edit-button btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#editModal" title="Edit" aria-label="Edit">
+                        <i class="fa-regular fa-pen-to-square"></i>
+                    </button>
+                </div>
+                <div class="card-body pt-0">
+                    <div class="border-bottom my-2">
+                        <div class="d-flex ">
+                            <button class="compare-button btn btn-outline-info" title="Compare" aria-label="Compare">
+                                <i class="fa-solid fa-list-check"></i>
+                            </button>
+                            <p class="card-text fw-bold my-0 mx-1 align-self-center">Description:</p>
+                        </div>
+                        <p class="p-desc card-text ps-3">${data.Description}</p>    
+                    </div>
+                    <div class="d-flex border-bottom my-2">
+                        <p class="card-text fw-bold me-1 mb-1">Stock: </p>
+                        <p class="p-stock card-text mb-1">${data.Stock}</p>
+                    </div>
+                    <div class="d-flex border-bottom my-2">
+                        <p class="card-text fw-bold me-1 mb-1">Price: </p>
+                        <p class="p-price card-text mb-1">${data.Price}</p>
+                    </div>
+                    <div class="my-2">
+                        <div class="d-flex">
+                            <p class="fw-bold me-1 mb-1">Retail:</p>
+                            <p class="p-retail card-text me-1 mb-1">${data.RetailName}</p>
+                        </div>
+                        <a role="button" href=${data.URL} class="p-url btn btn-primary">Go to product</a>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer text-muted d-flex justify-content-start align-items-center">
+                <button class="update-button me-1 btn btn-outline-success" title="Update" aria-label="Update"> 
+                    <i class="fa-solid fa-rotate"></i>
+                </button>
+                <p class="p-edit m-0">Last Edited: ${data.DateEdit}</p>
+            </div>
+        </div>`;
+        parent.appendChild(card_product);
+        // Add event listener for every compare button
+        let compareButton = card_product.querySelector('.compare-button');
         compareButton.addEventListener('click', function() {
             let compareBar = document.querySelector('.compare-bar');
             let compareItems = compareBar.querySelector('.compare-items');
@@ -289,21 +261,27 @@
             }
             compareItems.appendChild(compareItem);
         });
-        // Append the div to the list
-        item_div.appendChild(p3);
-        item_div.appendChild(p1);
-        item_div.appendChild(p2);
-        item_div.appendChild(p4);
-        item_div.appendChild(p5);
-        item_div.appendChild(p6);
-        item_div.appendChild(p7);
-        item_div.appendChild(p8);
-        item_div.appendChild(p9);
-        item_div.appendChild(divUpdate); // Last Edited + Update Button
-        item_div.appendChild(btn); // Edit Button
-        item_div.appendChild(compareButton); // Compare Button
-        
-        return item_div; // Return the new div to group
+        // Add event listener for every update button
+        let updateButton = card_product.querySelector('.update-button');
+        updateButton.addEventListener('click', function() {
+            document.getElementById("loadingScreen").style.display = "block";
+            console.log("Wait")
+            let productId = this.closest('.item-product').id;
+            let url = `/api/update/${productId}/`;
+            try {
+                fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    setNewData(data);
+                    document.getElementById("loadingScreen").style.display = "none";
+                    console.log("Done")
+                })
+            } catch (error) {
+                console.log(error);
+            }
+        });
+        return parent; // Return the new div to group
     }
     // compare bar item
     function createCompareItem(data) {
@@ -332,6 +310,44 @@
 
         compareItem.appendChild(compareData);
         return compareItem;
+    }
+</script>
+<script>
+    function addTab(data, ul, group) {
+        let tab = document.createElement('li');
+        tab.className = "nav-item";
+        tab.setAttribute("role", "presentation");
+        tab.innerHTML = `
+            <button class="nav-link" 
+            id="${data.ProductID}-tab" 
+            data-bs-toggle="tab" 
+            data-bs-target="#${data.ProductID}" 
+            type="button" role="tab" 
+            aria-controls="${data.ProductID}" 
+            aria-selected="false">${data.RetailName}: ${data.SimilarScore}</button>`;
+        ul.appendChild(tab);
+    
+        // If this is the first li element, add the 'active' class to the button
+        if (ul.children.length === 1) {
+            tab.querySelector('button').classList.add('active');
+        }
+    
+        return ul;
+    }
+
+    function addNavClass(itemDiv) {
+        let itemProducts = itemDiv.querySelectorAll('.item-product');
+        if (itemProducts.length > 0) {
+            if(itemProducts[0].firstElementChild) {
+                itemProducts[0].classList.add('show', 'active');
+            }
+        }
+        itemProducts.forEach(link => {
+            link.classList.add('tab-pane', 'fade');
+            link.setAttribute('role', 'tabpanel');
+            link.setAttribute('aria-labelledby', `${link.id}-tab`);
+        });
+        return itemDiv;
     }
 </script>
 <script src="{% static 'js/slider.js' %}"></script>

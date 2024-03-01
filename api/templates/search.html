@@ -45,8 +45,8 @@
                     }
                 });
             }
-            itemDiv = addProduct(data[item])
-            item_display.appendChild(itemDiv);
+            itemDiv = addProduct(data[item], item_display)
+            //item_display.appendChild(itemDiv);
         }
     });
     function createBrand(brandID, brandName, brandParent, currentUrl){

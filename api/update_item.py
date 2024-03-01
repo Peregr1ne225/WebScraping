@@ -132,7 +132,9 @@ def connect(url):
     # driver.maximize_window()
     driver.get(url)
     time.sleep(3)
-    return BeautifulSoup(driver.page_source, 'html.parser')
+    source = driver.page_source
+    driver.quit()
+    return BeautifulSoup(source, 'html.parser')
 
 def add_newdata(list_item):
     product = Products.objects.get(ProductID=list_item[0])
