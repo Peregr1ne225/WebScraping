@@ -225,9 +225,10 @@
             <i class="fa-regular fa-pen-to-square"></i>
         </button>` : '';
         card_product.innerHTML = `
+        <div class="container">
         <div class="row g-0">
             <div class="col-md-3">
-                <img src=# class="img-fluid rounded-start" alt="Product Image">
+                <img src=${data.PicURL} class="img-fluid rounded-start" alt="Product Image">
             </div>
             <div class="col-md-9">
                 <div class="card-header bg-transparent d-flex justify-content-start align-items-center">
@@ -258,7 +259,7 @@
                             <p class="fw-bold me-1 mb-1">Retail:</p>
                             <p class="p-retail card-text me-1 mb-1">${data.RetailName}</p>
                         </div>
-                        <a role="button" href=${data.URL} class="p-url btn btn-primary">Go to product</a>
+                        <a role="button" href=${data.URL} target="_blank" class="p-url btn btn-primary">Go to product</a>
                     </div>
                 </div>
             </div>
@@ -268,6 +269,7 @@
                 </button>
                 <p class="p-edit m-0">Last Edited: ${data.DateEdit}</p>
             </div>
+        </div>
         </div>`;
         parent.appendChild(card_product);
         
@@ -355,7 +357,7 @@
             data-bs-target="#${data.ProductID}" 
             type="button" role="tab" 
             aria-controls="${data.ProductID}" 
-            aria-selected="false">${data.RetailName}: ${data.SimilarScore}</button>`;
+            aria-selected="false"> <span class="fw-bold">Similer Score:</span> ${data.SimilarScore}</button>`;
         ul.appendChild(tab);
     
         // If this is the first li element, add the 'active' class to the button

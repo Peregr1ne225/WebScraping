@@ -57,7 +57,6 @@ $(document).ready(function() {
             <a id="dropdownAdminButton" class="dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" aria-label="Toggle Admin">Admin</a>
             <ul id="admin-dropdown" class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownAdminButton">
                 <li><a class="dropdown-item" href="/dashboard">Dashboard</a></li>
-                <li><a class="dropdown-item" href="/admin">Admin Page</a></li>
                 <li><a id="logoutButton" class="dropdown-item" href="#">Log Out</a></li>
             </ul>
         </div>`;

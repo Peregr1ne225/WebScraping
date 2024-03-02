@@ -1,7 +1,10 @@
 {% extends "base.html" %}
 {%block title%}Home{%endblock title%}
 {% block content %}
-
+<div class="result-view mb-3">
+    <div class="result-brand fs-5">
+    </div>
+</div>
 {% endblock content %}
 {% block script %}
 <script>
@@ -30,16 +33,19 @@
         let currentUrl = new URL(window.location.href);
         let currentBrandId = currentUrl.searchParams.get('brand');
         let baseUrl = currentUrl.origin;
+        let resultBrand = document.querySelector('.result-brand');
     
         for(let i=0;i<brand.length;i++) {
             let brandLink = document.createElement("a");
             brandLink.href = baseUrl + "?brand=" + brand[i].BrandID;
             brandLink.className = "list-group-item list-of-brand";
     
-            // If the brand ID in the URL matches the current brand ID, make the link bold and focus on it
             if (currentBrandId === brand[i].BrandID.toString()) {
-                brandLink.className += " font-weight-bold";
-                brandLink.focus();
+                brandLink.classList.add("fw-bold");
+                resultBrand.innerHTML = `
+                    <span class="fw-bold">Brand:</span>
+                    <span class="resultbrand">${brand[i].BrandName}</span>
+                `;
             }
     
             if (brand[i].BrandName === ""){

@@ -1,9 +1,34 @@
 {% extends "base.html" %}
 {% block title %} Home {% endblock title %}
 {% block content %}
-    
+<div class="result-view mb-3">
+    <div class="result-cate fs-5">
+    </div>
+    <div class="result-brand fs-5">
+    </div>
+</div>
 {% endblock content %}
 {% block script %}
+<script>
+    window.addEventListener('load', function() {
+        let url = new URL(window.location.href);
+        let path_part = url.pathname.split('/');
+        let path = path_part[1];
+        let result_cate = document.querySelector('.result-cate');
+        try{
+            fetch('/api/category/' + path)
+            .then(response => response.json())
+            .then(data => {
+                result_cate.innerHTML = `
+                    <span class="fw-bold">Category:</span>
+                    <span class="resultcate">${data.CategoryName}</span>
+                `;
+            });
+        } catch(error){
+            console.log(error);
+        }
+    });
+</script>
 <script>
     //Create GroupItem
     let data = JSON.parse('{{ data|escapejs|safe }}');
@@ -15,7 +40,6 @@
     window.addEventListener('load', async function() {
         let brandExist = []
         let currentUrl = new URL(window.location.href);
-        currentUrl = currentUrl.origin + currentUrl.pathname;
         let minPrice = 0;
         let maxPrice = 0;
         let brandParent = document.getElementById('dynamicBrand');
@@ -56,17 +80,21 @@
     });
     function createBrand(brandID, brandName, currentUrl, brandParent){
         let brandItem = document.createElement('a');
-        brandItem.href = currentUrl + "?brand=" + brandID;
+        origin_url = currentUrl.origin + currentUrl.pathname;
+        brandItem.href = origin_url + "?brand=" + brandID;
         brandItem.className = "list-group-item list-of-brand";
     
         // Get the brand ID from the current URL
-        let url = new URL(currentUrl);
-        let currentBrandId = url.searchParams.get('brand');
-    
+        
+        let currentBrandId = currentUrl.searchParams.get('brand');
+        let resultBrand = document.querySelector('.result-brand');
         // If the brand ID in the URL matches the current brand ID, make the link bold and focus on it
-        if (currentBrandId === brandID.toString()) {
-            brandItem.className += " font-weight-bold";
-            brandItem.focus();
+        if (currentBrandId == brandID) {
+            brandItem.classList.add("fw-bold");
+            resultBrand.innerHTML = `
+                <span class="fw-bold">Brand:</span>
+                <span class="resultbrand">${brandName}</span>
+            `;
         }
     
         //onlick brandItem.setAttribute('onclick', 'loadBrand(this.id)');

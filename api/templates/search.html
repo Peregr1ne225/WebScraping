@@ -1,16 +1,40 @@
 {% extends "base.html" %}
 {% block title %} Search {% endblock title%}
 {% block content %}
-<div class="query-result d-flex align-item-left align-middle">
-    <p class="fw-bold fs-5 align-middle">Search Results of: </p>
-    <p class="fw-bolder fs-5 text-decoration-underline ms-2 align-middle">{{request.GET.search}}</p>
+<div class="query-result d-flex align-item-left align-middle fs-5 ">
+    <span class="fw-bold align-middle">Search Results of: </span>
+    <span class="text-decoration-underline ms-2 align-middle">{{request.GET.search}}</span>
 </div>
-<div class="d-flex justify-content-between align-items-center" >
-    <p>Product ID</p>
-    <p>Product Name</p>
+<div class="result-view mb-3">
+    <div class="result-brand fs-5">
+    </div>
 </div>
 {% endblock content %}
 {% block script %}
+<script>
+    window.addEventListener('load', function() {
+        let brandview = document.querySelector('.brand-view .resultbrand');
+        try {
+            let url = new URL(window.location.href);
+            if(url.searchParams.get("brand") != null) {
+                let brand = url.searchParams.get("brand");
+                fetch("/api/brand/?id=" + brand)
+                .then(response => response.json())
+                .then(data => {
+                brandtoSubmenu(data, document.getElementById("dynamicBrand"))
+                })
+            }else{
+                fetch("/api/brand/")
+                .then(response => response.json())
+                .then(data => {
+                brandtoSubmenu(data, document.getElementById("dynamicBrand"))
+                })
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    });
+</script>
 <script>
     let data = JSON.parse('{{data|escapejs|safe}}');
     window.addEventListener('load', function() {
@@ -55,11 +79,16 @@
         let firstKey = Array.from(params.keys())[0];
         let firstValue = params.get(firstKey);
         let brandItem = document.createElement('a');
+        let resultBrand = document.querySelector('.result-brand');
         brandItem.href = `${path}?${firstKey}=${firstValue}&brand=${brandID}`;
         brandItem.className = "list-group-item list-of-brand";
-        //onlick brandItem.setAttribute('onclick', 'loadBrand(this.id)');
+        
         if (params.has('brand') && params.get('brand') == brandID) {
-            brandItem.classList.add('active');
+            brandItem.classList.add('fw-bold');
+            resultBrand.innerHTML = `
+                <span class="fw-bold">Brand:</span>
+                <span class="resultbrand">${brandName}</span>
+            `;
         }
         if (brandName === "") {
             brandName = "No Brand";

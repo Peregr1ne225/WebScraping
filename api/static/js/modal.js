@@ -157,7 +157,7 @@ function compareProduct(data){
     let compareCard = document.createElement('div');
     compareCard.className = 'card compare-part';
     compareCard.innerHTML = `
-        <img src="https://img.advice.co.th/images_nas/pic_product4/A0147250/A0147250_1.jpg" class="card-img-top" alt="...">
+        <img src=${data.PicURL} class="card-img-top" alt="...">
         <div class="card-body">
             <h5 class="card-title"> <strong>Product Name :</strong>${data.ProductName}</h5>
             <div class="d-flex border-bottom my-2">
@@ -181,7 +181,7 @@ function compareProduct(data){
                     <p class="fw-bold me-1 mb-1">Retail:</p>
                     <p class="card-text me-1 mb-1">${data.RetailName}</p>
                 </div>
-                <a role="button" href="${data.URL}" class="btn btn-primary">More Details</a>
+                <a role="button" href="${data.URL}" target="_blank" class="btn btn-primary">More Details</a>
             </div>
         </div>
         <div class="card-footer">

@@ -3,23 +3,18 @@ body {
     font-family: Arial, sans-serif;
 }
 
-.search-container {
-    display: flex;
-    align-items: center;
-}
-
-.navbar-brand {
-    color: #0d5dd4;
+.navbar-main {
+    color: #ff0000;
 }
 
 #topbrand a{
-    color: #2f67df;
-    font-size: small;
+    color: #0011ff !important;
+    font-size: normal;
 }
 
 #topcate a{
-    color: #5e3092;
-    font-size: small;
+    color: #c300ff !important;
+    font-size: normal;
 }
 
 .admin-page {
@@ -27,10 +22,6 @@ body {
     justify-content: center;
     align-items: center;
     margin-right: 10px;
-}
-
-.sidebar{
-    background-color: #021af3;
 }
 
 .sidebar p{
@@ -87,7 +78,7 @@ body {
 }
 
 .noUi-connect {
-    background: #212c2ba2; /* Color of the bar between the handles */
+    background: #0044ffa2; /* Color of the bar between the handles */
 }
 
 .noUi-target {
@@ -137,35 +128,16 @@ h1 {
 }
 
 .list-of-cate {
-    background-color: #ebb0b0;
+    background-color: #ebb0b0 !important;
 }
 
 .list-of-brand {
-    background-color: #b1f3da;
+    background-color: #b1f3da !important;
 }
 
 .list-group-item a{
     text-decoration: none;
     color: #000;
-}
-
-.item-group {    
-    margin: 10px auto;
-    padding: 10px;
-}
-
-.item-product{
-    margin: 5px; /* Add some margin to create space between items */
-    padding: 5px;
-}
-
-.item-group .item-product+.item-product{
-    border-top: 2px dotted #9aa2ee79;
-    margin-top: -1px; /* Add a border to the top of all p elements except the first one */
-}
-
-.item-group p{
-    margin: 0;
 }
 
 .nested-item{
@@ -181,9 +153,9 @@ h1 {
 
 @media (min-width: 768px) { /* This is the breakpoint for medium screens in Bootstrap */
     .md-vh-100 {
-      height: 92.5vh;
+        height: 90vh;
     }
-  }
+}
 
 .scrap-menu{
     background-color: #e1f1c8;
@@ -213,4 +185,10 @@ h1 {
 
 #dropdownSortButton.dropdown-toggle::after {
     display: none;
+}
+
+.compare-part{
+    flex: 0 0 20%;
+    max-width: 20%;
+    word-wrap: break-word;
 }
