@@ -48,22 +48,21 @@
                 <p>Loading...</p>
             </div>
             <div class="dropdown sort-item d-flex justify-content-end">
-                    <button id="dropdownSortButton" class="dropdown-toggle btn btn-outline-secondary" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" aria-label="Sort">
-                        Sorting
-                        <i class="fa-solid fa-sort"></i>
-                    </button>
-                    <ul id="sortDropdown" class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownSortButton">
-                        <li><button class="dropdown-item">Default</button></li>
-                        <li><button class="dropdown-item">Name: A -&gt; Z</button></li>
-                        <li><button class="dropdown-item">Name: Z -&gt; A</button></li>
-                        <li><button class="dropdown-item">Price: Min -&gt; Max</button></li>
-                        <li><button class="dropdown-item">Price: Max -&gt; Min</button></li>
-                        <li><button class="dropdown-item">Date: Old -&gt; New</button></li>
-                        <li><button class="dropdown-item">Date: New -&gt; Old</button></li>
-                    </ul>
+                <button id="dropdownSortButton" class="dropdown-toggle btn btn-outline-secondary" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" aria-label="Sort">
+                    <span id="dropdownButtonText">Default</span>
+                    <i class="fa-solid fa-sort"></i>
+                </button>
+                <ul id="sortDropdown" class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownSortButton">
+                    <li><button class="dropdown-item">Default</button></li>
+                    <li><button class="dropdown-item">Name: A -&gt; Z</button></li>
+                    <li><button class="dropdown-item">Name: Z -&gt; A</button></li>
+                    <li><button class="dropdown-item">Price: Min -&gt; Max</button></li>
+                    <li><button class="dropdown-item">Price: Max -&gt; Min</button></li>
+                    <li><button class="dropdown-item">Date: Old -&gt; New</button></li>
+                    <li><button class="dropdown-item">Date: New -&gt; Old</button></li>
+                </ul>
             </div>
             <div id="product-display" class="w-75 mx-auto d-flex justify-content-around flex-wrap flex-column">
-                
             {% block content %}
             
             {% endblock content %}
@@ -132,6 +131,9 @@
     }
     // Nested Loop for Category
     function nestedLoop(data, parentElement) {
+        let currentUrl = new URL(window.location.href);
+        let currentCateId = currentUrl.pathname.split('/')[1];
+    
         for (let i = 0; i < data.length; i++) {
             // Create the main list group item
             let mainItem = document.createElement("div");
@@ -142,11 +144,18 @@
             itemLink.className = "flex-grow-1";
             itemLink.href = getUrl(data[i].CategoryID);
             itemLink.textContent = data[i].CategoryName;
+    
+            if (currentCateId === data[i].CategoryID.toString()) {
+                itemLink.className += " font-weight-bold";
+                itemLink.focus();
+            }
+            
             mainItem.appendChild(itemLink);
+    
             // Create the expand button
             if(data[i].child_categories.length !== 0){
                 let expandButton = document.createElement("a");
-                expandButton.className = "expandbutton ms-2";
+                expandButton.className = "expandbutton ms-3";
                 expandButton.dataset.bsToggle = 'collapse';
                 expandButton.href = `#cate-${data[i].CategoryID}`;
                 expandButton.id = `cateButton-${data[i].CategoryID}`
@@ -156,6 +165,7 @@
                 expandButton.appendChild(icon);
                 mainItem.appendChild(expandButton);
             }
+    
             // Append the main item to the parent element
             parentElement.appendChild(mainItem);
     
@@ -375,6 +385,22 @@
 {% block script %}
 {% endblock script %}
 <script src="{% static 'js/sort.js' %}"></script>
+<script>
+    // Get the dropdown button text and dropdown items
+    let dropdownButtonText = document.getElementById('dropdownButtonText');
+    let dropdownItems = document.querySelectorAll('#sortDropdown .dropdown-item');
+
+    // Add a click event listener to each dropdown item
+    dropdownItems.forEach(item => {
+        item.addEventListener('click', function(event) {
+            // Prevent the default action
+            event.preventDefault();
+
+            // Update the dropdown button's text with the clicked item's text
+            dropdownButtonText.textContent = this.textContent;
+        });
+    });
+</script>
 <script>
     // Sort Dropdown
     window.addEventListener('load', function() {

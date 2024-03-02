@@ -58,6 +58,12 @@
         brandItem.href = `${path}?${firstKey}=${firstValue}&brand=${brandID}`;
         brandItem.className = "list-group-item list-of-brand";
         //onlick brandItem.setAttribute('onclick', 'loadBrand(this.id)');
+        if (params.has('brand') && params.get('brand') == brandID) {
+            brandItem.classList.add('active');
+        }
+        if (brandName === "") {
+            brandName = "No Brand";
+        }
         brandItem.textContent = brandName;
         brandParent.appendChild(brandItem);
     }

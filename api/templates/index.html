@@ -28,12 +28,23 @@
     });
     function brandtoSubmenu(brand, parentElement){
         let currentUrl = new URL(window.location.href);
-        currentUrl = currentUrl.origin;
+        let currentBrandId = currentUrl.searchParams.get('brand');
+        let baseUrl = currentUrl.origin;
+    
         for(let i=0;i<brand.length;i++) {
             let brandLink = document.createElement("a");
-            brandLink.href = currentUrl + "?brand=" + brand[i].BrandID;
+            brandLink.href = baseUrl + "?brand=" + brand[i].BrandID;
             brandLink.className = "list-group-item list-of-brand";
-            //onlick brandItem.setAttribute('onclick', 'loadBrand(this.id)');
+    
+            // If the brand ID in the URL matches the current brand ID, make the link bold and focus on it
+            if (currentBrandId === brand[i].BrandID.toString()) {
+                brandLink.className += " font-weight-bold";
+                brandLink.focus();
+            }
+    
+            if (brand[i].BrandName === ""){
+                brand[i].BrandName = "Unknown";
+            }
             brandLink.textContent = brand[i].BrandName;
             parentElement.appendChild(brandLink)
         }

@@ -58,6 +58,17 @@
         let brandItem = document.createElement('a');
         brandItem.href = currentUrl + "?brand=" + brandID;
         brandItem.className = "list-group-item list-of-brand";
+    
+        // Get the brand ID from the current URL
+        let url = new URL(currentUrl);
+        let currentBrandId = url.searchParams.get('brand');
+    
+        // If the brand ID in the URL matches the current brand ID, make the link bold and focus on it
+        if (currentBrandId === brandID.toString()) {
+            brandItem.className += " font-weight-bold";
+            brandItem.focus();
+        }
+    
         //onlick brandItem.setAttribute('onclick', 'loadBrand(this.id)');
         brandItem.textContent = brandName;
         brandParent.appendChild(brandItem);
