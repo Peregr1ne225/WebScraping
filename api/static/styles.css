@@ -14,12 +14,12 @@ body {
 
 #topbrand a{
     color: #2f67df;
-    font-size: small;
+    font-size: normal;
 }
 
 #topcate a{
     color: #5e3092;
-    font-size: small;
+    font-size: normal;
 }
 
 .admin-page {

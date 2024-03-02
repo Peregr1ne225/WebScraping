@@ -1,5 +1,4 @@
 // Add Top Brand from API
-
 window.addEventListener("load", function(){
     try{
         fetch("/api/brand_top/")
@@ -54,7 +53,7 @@ $(document).ready(function() {
     if (token) {
         // if the token exists, create the admin dropdown
         var adminDropdown = `
-        <div class="dropdown admin-page">
+        <div class="dropdown admin-page" style="position: absolute; right: 0; top: 0;">
             <a id="dropdownAdminButton" class="dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" aria-label="Toggle Admin">Admin</a>
             <ul id="admin-dropdown" class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownAdminButton">
                 <li><a class="dropdown-item" href="/dashboard">Dashboard</a></li>
@@ -62,13 +61,13 @@ $(document).ready(function() {
                 <li><a id="logoutButton" class="dropdown-item" href="#">Log Out</a></li>
             </ul>
         </div>`;
-        $('.navbar .container-fluid').append(adminDropdown);
+        $('.navbar .top-bar').append(adminDropdown);
     } else {
         // if the token doesn't exist, create the login button
         var loginButton = `
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#loginModal">
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#loginModal" style="position: absolute; right: 0; top: 0;">
             Login
         </button>`;
-        $('.navbar .container-fluid').append(loginButton);
+        $('.navbar .top-bar').append(loginButton);
     }
 });
