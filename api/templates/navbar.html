@@ -1,9 +1,9 @@
 <!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top" style="z-index: 1030;">
+<nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
     <div class="container-fluid flex-column" style="position: relative;">
         <!-- Search Container -->
         <div class="top-bar d-flex justify-content-between" >
-            <form class="d-flex" action="{{ request.path }}" method="get">
+            <form class="d-flex" action="{% if request.path == '/dashboard/' %}/{% else %}{{ request.path }}{% endif %}" method="get">
                 <input name="search" class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
                 <button class="btn btn-outline-success" type="submit"><i class="fa-solid fa-search"></i></button>
             </form>

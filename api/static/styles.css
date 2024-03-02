@@ -3,22 +3,17 @@ body {
     font-family: Arial, sans-serif;
 }
 
-.search-container {
-    display: flex;
-    align-items: center;
-}
-
-.navbar-brand {
-    color: #0d5dd4;
+.navbar-main {
+    color: #ff0000;
 }
 
 #topbrand a{
-    color: #2f67df;
+    color: #0011ff !important;
     font-size: normal;
 }
 
 #topcate a{
-    color: #5e3092;
+    color: #c300ff !important;
     font-size: normal;
 }
 
@@ -27,10 +22,6 @@ body {
     justify-content: center;
     align-items: center;
     margin-right: 10px;
-}
-
-.sidebar{
-    background-color: #021af3;
 }
 
 .sidebar p{
