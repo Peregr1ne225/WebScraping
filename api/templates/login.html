@@ -31,28 +31,28 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <!-- Script to show the modal -->
 <script>
-    $(document).ready(function() {
-        $('#loginForm').on('submit', function(e) {
-            e.preventDefault();
-            $.ajax({
-            url: '/api-token-auth/',  // change to your login API endpoint
-            type: 'post',
-            data: $('#loginForm').serialize(),
-            success: function(data) {
-                // store the token in local storage
-                console.log(data.token);
-                document.cookie = "token=" + data.token;
-                // close the modal
-                alert('Logged in successfully');
-                $('#loginModal').modal('hide');
-                location.reload();
-            },
-            error: function(xhr, status, error) {
-                // handle error
-                alert('Error logging in. Check your username and password.');
-                console.error(error);
-            }
-            });
-        });
+  $(document).ready(function() {
+    $('#loginForm').on('submit', function(e) {
+      e.preventDefault();
+      $.ajax({
+        url: '/api-token-auth/',  // change to your login API endpoint
+        type: 'post',
+        data: $('#loginForm').serialize(),
+        success: function(data) {
+            // store the token in local storage
+            console.log(data.token);
+            document.cookie = "token=" + data.token;
+            // close the modal
+            alert('Logged in successfully');
+            $('#loginModal').modal('hide');
+            location.reload();
+        },
+        error: function(xhr, status, error) {
+            // handle error
+            alert('Error logging in. Check your username and password.');
+            console.error(error);
+        }
+      });
     });
-    </script>
+  });
+</script>
