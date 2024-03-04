@@ -96,7 +96,6 @@ document.getElementById('submitEditForm').addEventListener('click', function() {
         body: json
     })
     .then(response => {
-        responseHeader(response.status, response.statusText);
         console.log(response);
         return response.json()
     })
@@ -109,11 +108,7 @@ document.getElementById('submitEditForm').addEventListener('click', function() {
         console.error(error);
     });
 });
-// Modal Response Header
-function responseHeader(status, text) {
-    let modalTitle = document.querySelector('#responseModal .modal-title');
-    modalTitle.textContent = `Status ${status}: ${text}`;
-}
+
 // Modal Response Body
 function responseModal(data) {
     let myModal = new bootstrap.Modal(document.getElementById('responseModal'));
@@ -188,4 +183,52 @@ function compareProduct(data){
             <small class="m-0">Last Edited: ${data.DateEdit}</small>
         </div>`
     return compareCard;
+}
+
+let confirmDelModal = document.getElementById('confirmDel');
+confirmDelModal.addEventListener('show.bs.modal', function() {
+    let productId = document.getElementById('productId').value;
+    let modalTitle = confirmDelModal.querySelector('.modal-title');
+    modalTitle.textContent = `Delete Product: ${productId}`;
+    let confirmButton = confirmDelModal.querySelector('#submitDelete');
+    let csrftoken = document.querySelector('[name=csrf-token]').content;
+    confirmButton.addEventListener('click', function() {
+        fetch(`/api/product/${productId}/`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken
+            }
+        }).then(response => {
+            console.log(response);
+            removeItem(productId);
+        })
+        .catch((error) => {
+            console.error(error);
+        });
+    });
+});
+
+function removeItem(productId) {
+    let item = document.getElementById(productId);
+    if (!item) {
+        return;
+    }
+    let grandParentGroup = item.parentElement.parentElement;
+    let parentGroup = item.parentElement;
+    item.remove();
+    let tab = document.getElementById(productId + '-tab');
+    if (tab) {
+        tab.remove();
+    }
+    let tabContent = document.getElementById('tab-content');
+    if (tabContent && tabContent.children.length === 0) {
+        // If not, remove the parent
+        tabContent.remove();
+    }
+    // Check if the grandparent of the item has any children left
+    if (parentGroup.children.length === 0) {
+        // If not, remove the grandparent
+        grandParentGroup.remove();
+    }
 }

@@ -40,6 +40,7 @@
                     <textarea name="Description" class="form-control" id="productDescription" rows="5"></textarea>
                 </div>
             </form>
+            <button id="delete-product" type="button" class="btn btn-danger" data-bs-target="#confirmDel" data-bs-toggle="modal" data-bs-dismiss="modal">Delete</button>
         </div>
         <!-- Modal Footer -->
         <div class="modal-footer">
@@ -106,3 +107,23 @@
     </div>
 </div>
 <!-- End Modal Compare-->
+<!-- Modal Confirm Edit -->
+<div class="modal fade" id="confirmDel" aria-hidden="true" aria-labelledby="confirmDelLabel" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="confirmEdit">Confirm Delete</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <p>Are you sure?</p>
+            <p>This operation can't undo</p>
+            <p>Proceed with caution</p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-warning" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
+            <button id="submitDelete" type="button" class="btn btn-danger" data-bs-dismiss="modal">Confirm</button>
+        </div>
+    </div>
+    </div>
+</div>
